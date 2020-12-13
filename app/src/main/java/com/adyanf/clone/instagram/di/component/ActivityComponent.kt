@@ -4,6 +4,7 @@ import com.adyanf.clone.instagram.di.ActivityScope
 import com.adyanf.clone.instagram.di.module.ActivityModule
 import com.adyanf.clone.instagram.ui.dummy.DummyActivity
 import com.adyanf.clone.instagram.ui.login.LoginActivity
+import com.adyanf.clone.instagram.ui.signup.SignUpActivity
 import com.adyanf.clone.instagram.ui.splash.SplashActivity
 import dagger.Component
 
@@ -19,4 +20,6 @@ interface ActivityComponent {
     fun inject(activity: DummyActivity)
 
     fun inject(activity: LoginActivity)
+
+    fun inject(activity: SignUpActivity)
 }

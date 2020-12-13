@@ -9,12 +9,19 @@
     <string name="server_connection_error">Not able to connect, please retry again</string>
     <string name="network_login_again">Please log in again</string>
 
-    <!--login-->
+    <!--login & register-->
+    <string name="name_field_hint">Enter your name</string>
     <string name="email_field_hint">Enter your email</string>
     <string name="password_field_hint">Enter your password</string>
+    <string name="name_field_empty">Name can\'t be empty</string>
     <string name="email_field_empty">Email can\'t be empty</string>
     <string name="password_field_empty">Password can\'t be empty</string>
+    <string name="name_field_small_length">Name less than 3 digits</string>
     <string name="email_field_invalid">Not a valid email</string>
     <string name="password_field_small_length">Password less than 6 digits</string>
+    <string name="signup_with_email_text">Sign Up with Email</string>
+    <string name="login_with_email_text">Login with Email</string>
     <string name="login_button_text">Login</string>
+    <string name="signup_button_text">Sign Up</string>
+    <string name="or_text">OR</string>
 </resources>
