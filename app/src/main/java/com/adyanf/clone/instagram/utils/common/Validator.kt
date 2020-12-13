@@ -19,51 +19,43 @@ object Validator {
 
     fun validateLoginFields(email: String?, password: String?): List<Validation> =
         ArrayList<Validation>().apply {
-            when {
-                email.isNullOrBlank() ->
-                    add(Validation(Validation.Field.EMAIL, Resource.error(R.string.email_field_empty)))
-                !EMAIL_ADDRESS.matcher(email).matches() ->
-                    add(Validation(Validation.Field.EMAIL, Resource.error(R.string.email_field_invalid)))
-                else ->
-                    add(Validation(Validation.Field.EMAIL, Resource.success()))
-            }
-            when {
-                password.isNullOrBlank() ->
-                    add(Validation(Validation.Field.PASSWORD, Resource.error(R.string.password_field_empty)))
-                password.length < MIN_PASSWORD_LENGTH ->
-                    add(Validation(Validation.Field.PASSWORD, Resource.error(R.string.password_field_small_length)))
-                else ->
-                    add(Validation(Validation.Field.PASSWORD, Resource.success()))
-            }
+            add(validateEmailField(email))
+            add(validatePasswordField(password))
         }
 
     fun validateRegisterFields(name: String?, email: String?, password: String?): List<Validation> =
         ArrayList<Validation>().apply {
-            when {
-                password.isNullOrBlank() ->
-                    add(Validation(Validation.Field.NAME, Resource.error(R.string.password_field_empty)))
-                password.length < MIN_NAME_LENGTH ->
-                    add(Validation(Validation.Field.NAME, Resource.error(R.string.password_field_small_length)))
-                else ->
-                    add(Validation(Validation.Field.NAME, Resource.success()))
-            }
-            when {
-                email.isNullOrBlank() ->
-                    add(Validation(Validation.Field.EMAIL, Resource.error(R.string.email_field_empty)))
-                !EMAIL_ADDRESS.matcher(email).matches() ->
-                    add(Validation(Validation.Field.EMAIL, Resource.error(R.string.email_field_invalid)))
-                else ->
-                    add(Validation(Validation.Field.EMAIL, Resource.success()))
-            }
-            when {
-                password.isNullOrBlank() ->
-                    add(Validation(Validation.Field.PASSWORD, Resource.error(R.string.password_field_empty)))
-                password.length < MIN_PASSWORD_LENGTH ->
-                    add(Validation(Validation.Field.PASSWORD, Resource.error(R.string.password_field_small_length)))
-                else ->
-                    add(Validation(Validation.Field.PASSWORD, Resource.success()))
-            }
+            add(validateNameField(name))
+            add(validateEmailField(email))
+            add(validatePasswordField(password))
         }
+
+    private fun validateNameField(name: String?): Validation = when {
+        name.isNullOrBlank() ->
+            Validation(Validation.Field.NAME, Resource.error(R.string.name_field_empty))
+        name.length < MIN_NAME_LENGTH ->
+            Validation(Validation.Field.NAME, Resource.error(R.string.name_field_small_length))
+        else ->
+            Validation(Validation.Field.NAME, Resource.success())
+    }
+
+    private fun validateEmailField(email: String?): Validation = when {
+        email.isNullOrBlank() ->
+            Validation(Validation.Field.EMAIL, Resource.error(R.string.email_field_empty))
+        !EMAIL_ADDRESS.matcher(email).matches() ->
+            Validation(Validation.Field.EMAIL, Resource.error(R.string.email_field_invalid))
+        else ->
+            Validation(Validation.Field.EMAIL, Resource.success())
+    }
+
+    private fun validatePasswordField(password: String?): Validation = when {
+        password.isNullOrBlank() ->
+            Validation(Validation.Field.PASSWORD, Resource.error(R.string.password_field_empty))
+        password.length < MIN_PASSWORD_LENGTH ->
+            Validation(Validation.Field.PASSWORD, Resource.error(R.string.password_field_small_length))
+        else ->
+            Validation(Validation.Field.PASSWORD, Resource.success())
+    }
 }
 
 data class Validation(val field: Field, val resource: Resource<Int>) {
