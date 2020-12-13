@@ -22,6 +22,7 @@
         </activity>
 
         <activity android:name="com.adyanf.clone.instagram.ui.dummy.DummyActivity"/>
+        <activity android:name="com.adyanf.clone.instagram.ui.login.LoginActivity"/>
     </application>
 
 </manifest>

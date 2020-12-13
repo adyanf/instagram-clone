@@ -4,6 +4,8 @@ import com.adyanf.clone.instagram.data.local.db.DatabaseService
 import com.adyanf.clone.instagram.data.local.prefs.UserPreferences
 import com.adyanf.clone.instagram.data.model.User
 import com.adyanf.clone.instagram.data.remote.NetworkService
+import com.adyanf.clone.instagram.data.remote.request.LoginRequest
+import io.reactivex.Single
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -40,4 +42,16 @@ class UserRepository @Inject constructor(
         else
             null
     }
+
+    fun doUserLogin(email: String, password: String): Single<User> =
+        networkService.doLoginCall(LoginRequest(email, password))
+            .map {
+                User(
+                    it.userId,
+                    it.userName,
+                    it.userEmail,
+                    it.accessToken,
+                    it.profilePicUrl
+                )
+            }
 }

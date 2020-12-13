@@ -6,6 +6,7 @@ import com.adyanf.clone.instagram.data.repository.DummyRepository
 import com.adyanf.clone.instagram.data.repository.UserRepository
 import com.adyanf.clone.instagram.ui.base.BaseActivity
 import com.adyanf.clone.instagram.ui.dummy.DummyViewModel
+import com.adyanf.clone.instagram.ui.login.LoginViewModel
 import com.adyanf.clone.instagram.ui.splash.SplashViewModel
 import com.adyanf.clone.instagram.utils.ViewModelProviderFactory
 import com.adyanf.clone.instagram.utils.network.NetworkHelper
@@ -47,4 +48,15 @@ class ActivityModule(private val activity: BaseActivity<*>) {
         activity, ViewModelProviderFactory(DummyViewModel::class) {
             DummyViewModel(schedulerProvider, compositeDisposable, networkHelper, dummyRepository)
         }).get(DummyViewModel::class.java)
+
+    @Provides
+    fun provideDLoginViewModel(
+        schedulerProvider: SchedulerProvider,
+        compositeDisposable: CompositeDisposable,
+        networkHelper: NetworkHelper,
+        userRepository: UserRepository
+    ): LoginViewModel = ViewModelProviders.of(
+        activity, ViewModelProviderFactory(LoginViewModel::class) {
+            LoginViewModel(schedulerProvider, compositeDisposable, networkHelper, userRepository)
+        }).get(LoginViewModel::class.java)
 }

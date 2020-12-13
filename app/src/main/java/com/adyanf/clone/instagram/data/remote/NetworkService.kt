@@ -1,7 +1,9 @@
 package com.adyanf.clone.instagram.data.remote
 
 import com.adyanf.clone.instagram.data.remote.request.DummyRequest
+import com.adyanf.clone.instagram.data.remote.request.LoginRequest
 import com.adyanf.clone.instagram.data.remote.response.DummyResponse
+import com.adyanf.clone.instagram.data.remote.response.LoginResponse
 import io.reactivex.Single
 import retrofit2.http.Body
 import retrofit2.http.Header
@@ -17,6 +19,12 @@ interface NetworkService {
         @Body request: DummyRequest,
         @Header(Networking.HEADER_API_KEY) apiKey: String = Networking.API_KEY // default value set when Networking create is called
     ): Single<DummyResponse>
+
+    @POST(Endpoints.LOGIN)
+    fun doLoginCall(
+        @Body request: LoginRequest,
+        @Header(Networking.HEADER_API_KEY) apiKey: String = Networking.API_KEY // default value set when Networking create is called
+    ): Single<LoginResponse>
 
     /*
      * Example to add other headers
