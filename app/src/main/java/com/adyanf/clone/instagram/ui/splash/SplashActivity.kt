@@ -7,6 +7,7 @@ import com.adyanf.clone.instagram.R
 import com.adyanf.clone.instagram.di.component.ActivityComponent
 import com.adyanf.clone.instagram.ui.base.BaseActivity
 import com.adyanf.clone.instagram.ui.dummy.DummyActivity
+import com.adyanf.clone.instagram.ui.login.LoginActivity
 import com.adyanf.clone.instagram.utils.common.Event
 
 class SplashActivity : BaseActivity<SplashViewModel>() {
@@ -30,6 +31,12 @@ class SplashActivity : BaseActivity<SplashViewModel>() {
         viewModel.launchDummy.observe(this, Observer<Event<Map<String, String>>> {
             it.getIfNotHandled()?.run {
                 startActivity(Intent(applicationContext, DummyActivity::class.java))
+            }
+        })
+
+        viewModel.launchLogin.observe(this, Observer<Event<Map<String, String>>> {
+            it.getIfNotHandled()?.run {
+                startActivity(Intent(applicationContext, LoginActivity::class.java))
             }
         })
     }
