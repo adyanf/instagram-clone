@@ -18,7 +18,7 @@ import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Singleton
 
 @Module
-class ApplicationModule(private val application: InstagramApplication) {
+class ApplicationTestModule(private val application: InstagramApplication) {
 
     @Provides
     @Singleton
@@ -28,10 +28,6 @@ class ApplicationModule(private val application: InstagramApplication) {
     @Singleton
     fun provideContext(): Context = application
 
-    /**
-     * Since this function do not have @Singleton then each time CompositeDisposable is injected
-     * then a new instance of CompositeDisposable will be provided
-     */
     @Provides
     fun provideCompositeDisposable(): CompositeDisposable = CompositeDisposable()
 
