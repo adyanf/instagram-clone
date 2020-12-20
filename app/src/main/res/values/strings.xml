@@ -24,4 +24,12 @@
     <string name="login_button_text">Login</string>
     <string name="signup_button_text">Sign Up</string>
     <string name="or_text">OR</string>
+
+    <!--main-->
+    <string name="home_screen">HOME</string>
+    <string name="menu_home">Home</string>
+    <string name="photo_screen">PHOTO</string>
+    <string name="menu_photo">Add Photos</string>
+    <string name="profile_screen">PROFILE</string>
+    <string name="menu_profile">Profile</string>
 </resources>

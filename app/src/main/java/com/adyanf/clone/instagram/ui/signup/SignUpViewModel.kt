@@ -22,7 +22,7 @@ class SignUpViewModel(
     val passwordField: MutableLiveData<String> = MutableLiveData()
     val signingUp: MutableLiveData<Boolean> = MutableLiveData()
 
-    val launchDummy: MutableLiveData<Event<Map<String, String>>> = MutableLiveData()
+    val launchMain: MutableLiveData<Event<Map<String, String>>> = MutableLiveData()
     val launchLogin: MutableLiveData<Event<Map<String, String>>> = MutableLiveData()
 
     private val validationsList: MutableLiveData<List<Validation>> = MutableLiveData()
@@ -58,7 +58,7 @@ class SignUpViewModel(
                             {
                                 userRepository.saveCurrentUser(it)
                                 signingUp.postValue(false)
-                                launchDummy.postValue(Event(emptyMap()))
+                                launchMain.postValue(Event(emptyMap()))
                             },
                             {
                                 handleNetworkError(it)

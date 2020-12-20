@@ -18,7 +18,7 @@ class SplashViewModel(
 
     // Event is used by the view model to tell the activity to launch another Activity
     // view model also provided the Bundle in the event that is needed for the Activity
-    val launchDummy: MutableLiveData<Event<Map<String, String>>> = MutableLiveData()
+    val launchMain: MutableLiveData<Event<Map<String, String>>> = MutableLiveData()
 
     val launchLogin: MutableLiveData<Event<Map<String, String>>> = MutableLiveData()
 
@@ -26,7 +26,7 @@ class SplashViewModel(
         if (userRepository.getCurrentUser() == null) {
             launchLogin.postValue(Event(emptyMap()))
         } else {
-            launchDummy.postValue(Event(emptyMap()))
+            launchMain.postValue(Event(emptyMap()))
         }
     }
 }

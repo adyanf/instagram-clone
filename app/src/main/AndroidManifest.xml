@@ -24,6 +24,7 @@
         <activity android:name="com.adyanf.clone.instagram.ui.dummy.DummyActivity"/>
         <activity android:name="com.adyanf.clone.instagram.ui.login.LoginActivity"/>
         <activity android:name="com.adyanf.clone.instagram.ui.signup.SignUpActivity"/>
+        <activity android:name="com.adyanf.clone.instagram.ui.main.MainActivity"/>
     </application>
 
 </manifest>

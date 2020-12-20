@@ -9,8 +9,8 @@ import androidx.lifecycle.Observer
 import com.adyanf.clone.instagram.R
 import com.adyanf.clone.instagram.di.component.ActivityComponent
 import com.adyanf.clone.instagram.ui.base.BaseActivity
-import com.adyanf.clone.instagram.ui.dummy.DummyActivity
 import com.adyanf.clone.instagram.ui.login.LoginActivity
+import com.adyanf.clone.instagram.ui.main.MainActivity
 import com.adyanf.clone.instagram.utils.common.Status
 import kotlinx.android.synthetic.main.activity_signup.*
 
@@ -64,9 +64,9 @@ class SignUpActivity : BaseActivity<SignUpViewModel>() {
     override fun setupObservers() {
         super.setupObservers()
 
-        viewModel.launchDummy.observe(this, Observer {
+        viewModel.launchMain.observe(this, Observer {
             it.getIfNotHandled()?.run {
-                startActivity(Intent(applicationContext, DummyActivity::class.java))
+                startActivity(Intent(applicationContext, MainActivity::class.java))
                 finish()
             }
         })

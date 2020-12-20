@@ -6,6 +6,9 @@ import com.adyanf.clone.instagram.data.repository.DummyRepository
 import com.adyanf.clone.instagram.ui.base.BaseFragment
 import com.adyanf.clone.instagram.ui.dummies.DummiesAdapter
 import com.adyanf.clone.instagram.ui.dummies.DummiesViewModel
+import com.adyanf.clone.instagram.ui.home.HomeViewModel
+import com.adyanf.clone.instagram.ui.photo.PhotoViewModel
+import com.adyanf.clone.instagram.ui.profile.ProfileViewModel
 import com.adyanf.clone.instagram.utils.ViewModelProviderFactory
 import com.adyanf.clone.instagram.utils.network.NetworkHelper
 import com.adyanf.clone.instagram.utils.rx.SchedulerProvider
@@ -34,4 +37,40 @@ class FragmentModule(private val fragment: BaseFragment<*>) {
 
     @Provides
     fun provideDummiesAdapter() = DummiesAdapter(fragment.lifecycle, ArrayList())
+
+    @Provides
+    fun provideHomeViewModel(
+        schedulerProvider: SchedulerProvider,
+        compositeDisposable: CompositeDisposable,
+        networkHelper: NetworkHelper
+    ): HomeViewModel =
+        ViewModelProviders.of(fragment,
+            ViewModelProviderFactory(HomeViewModel::class) {
+                HomeViewModel(schedulerProvider, compositeDisposable, networkHelper)
+            }
+        ).get(HomeViewModel::class.java)
+
+    @Provides
+    fun providePhotoViewModel(
+        schedulerProvider: SchedulerProvider,
+        compositeDisposable: CompositeDisposable,
+        networkHelper: NetworkHelper
+    ): PhotoViewModel =
+        ViewModelProviders.of(fragment,
+            ViewModelProviderFactory(PhotoViewModel::class) {
+                PhotoViewModel(schedulerProvider, compositeDisposable, networkHelper)
+            }
+        ).get(PhotoViewModel::class.java)
+
+    @Provides
+    fun provideProfileViewModel(
+        schedulerProvider: SchedulerProvider,
+        compositeDisposable: CompositeDisposable,
+        networkHelper: NetworkHelper
+    ): ProfileViewModel =
+        ViewModelProviders.of(fragment,
+            ViewModelProviderFactory(ProfileViewModel::class) {
+                ProfileViewModel(schedulerProvider, compositeDisposable, networkHelper)
+            }
+        ).get(ProfileViewModel::class.java)
 }
