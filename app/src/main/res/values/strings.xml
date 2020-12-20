@@ -35,4 +35,10 @@
 
     <!--posts-->
     <string name="post_like_label">%1d Likes</string>
+    
+    <!--profile-->
+    <string name="edit_profile">Edit Profile</string>
+    <string name="logout_button_text">Logout</string>
+    <string name="posts_label"><![CDATA[<b>%1d</b> Posts]]></string>
+
 </resources>

@@ -2,6 +2,7 @@ package com.adyanf.clone.instagram.data.repository
 
 import com.adyanf.clone.instagram.data.local.db.DatabaseService
 import com.adyanf.clone.instagram.data.local.prefs.UserPreferences
+import com.adyanf.clone.instagram.data.model.MyInfo
 import com.adyanf.clone.instagram.data.model.User
 import com.adyanf.clone.instagram.data.remote.NetworkService
 import com.adyanf.clone.instagram.data.remote.request.LoginRequest
@@ -67,4 +68,12 @@ class UserRepository @Inject constructor(
                     it.profilePicUrl
                 )
             }
+
+    fun doUserLogout(user: User): Single<Any> =
+        networkService.doLogoutCall(user.id, user.accessToken)
+            .map { it.message }
+
+    fun doFetchInfo(user: User): Single<MyInfo> =
+        networkService.doFetchMyInfoCall(user.id, user.accessToken)
+            .map { it.data }
 }

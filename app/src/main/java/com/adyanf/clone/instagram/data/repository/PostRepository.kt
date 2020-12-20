@@ -21,6 +21,13 @@ class PostRepository @Inject constructor(
         ).map { it.data }
     }
 
+    fun getMyPostList(user: User): Single<List<Post>> {
+        return networkService.doMyPostListCall(
+            user.id,
+            user.accessToken
+        ).map { it.data }
+    }
+
     fun makeLikePost(post: Post, user: User): Single<Post> {
         return networkService.doPostLikeCall(
             PostLikeModifyRequest(post.id),
@@ -41,7 +48,7 @@ class PostRepository @Inject constructor(
     }
 
     fun makeUnlikePost(post: Post, user: User): Single<Post> {
-        return networkService.doPostLikeCall(
+        return networkService.doPostUnlikeCall(
             PostLikeModifyRequest(post.id),
             user.id,
             user.accessToken

@@ -7,10 +7,12 @@ import com.adyanf.clone.instagram.data.remote.request.SignUpRequest
 import com.adyanf.clone.instagram.data.remote.response.DummyResponse
 import com.adyanf.clone.instagram.data.remote.response.GeneralResponse
 import com.adyanf.clone.instagram.data.remote.response.LoginResponse
+import com.adyanf.clone.instagram.data.remote.response.MyInfoResponse
 import com.adyanf.clone.instagram.data.remote.response.PostListResponse
 import com.adyanf.clone.instagram.data.remote.response.SignUpResponse
 import io.reactivex.Single
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
@@ -59,6 +61,27 @@ interface NetworkService {
     @PUT(Endpoints.POST_UNLIKE)
     fun doPostUnlikeCall(
         @Body request: PostLikeModifyRequest,
+        @Header(Networking.HEADER_USER_ID) userId: String,
+        @Header(Networking.HEADER_ACCESS_TOKEN) accessToken: String,
+        @Header(Networking.HEADER_API_KEY) apiKey: String = Networking.API_KEY
+    ): Single<GeneralResponse>
+
+    @GET(Endpoints.FETCH_MY_INFO)
+    fun doFetchMyInfoCall(
+        @Header(Networking.HEADER_USER_ID) userId: String,
+        @Header(Networking.HEADER_ACCESS_TOKEN) accessToken: String,
+        @Header(Networking.HEADER_API_KEY) apiKey: String = Networking.API_KEY
+    ): Single<MyInfoResponse>
+
+    @GET(Endpoints.MY_POST_LIST)
+    fun doMyPostListCall(
+        @Header(Networking.HEADER_USER_ID) userId: String,
+        @Header(Networking.HEADER_ACCESS_TOKEN) accessToken: String,
+        @Header(Networking.HEADER_API_KEY) apiKey: String = Networking.API_KEY
+    ): Single<PostListResponse>
+
+    @DELETE(Endpoints.LOGOUT)
+    fun doLogoutCall(
         @Header(Networking.HEADER_USER_ID) userId: String,
         @Header(Networking.HEADER_ACCESS_TOKEN) accessToken: String,
         @Header(Networking.HEADER_API_KEY) apiKey: String = Networking.API_KEY

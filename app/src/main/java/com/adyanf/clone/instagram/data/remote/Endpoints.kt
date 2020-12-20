@@ -8,4 +8,7 @@ object Endpoints {
     const val HOME_POSTS_LIST = "instagram/post/list"
     const val POST_LIKE = "instagram/post/like"
     const val POST_UNLIKE = "instagram/post/unlike"
+    const val MY_POST_LIST = "instagram/post/my"
+    const val LOGOUT = "logout"
+    const val FETCH_MY_INFO = "me"
 }

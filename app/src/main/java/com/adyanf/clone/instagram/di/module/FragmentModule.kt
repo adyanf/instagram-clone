@@ -83,11 +83,13 @@ class FragmentModule(private val fragment: BaseFragment<*>) {
     fun provideProfileViewModel(
         schedulerProvider: SchedulerProvider,
         compositeDisposable: CompositeDisposable,
-        networkHelper: NetworkHelper
+        networkHelper: NetworkHelper,
+        userRepository: UserRepository,
+        postRepository: PostRepository
     ): ProfileViewModel =
         ViewModelProviders.of(fragment,
             ViewModelProviderFactory(ProfileViewModel::class) {
-                ProfileViewModel(schedulerProvider, compositeDisposable, networkHelper)
+                ProfileViewModel(schedulerProvider, compositeDisposable, networkHelper, userRepository, postRepository)
             }
         ).get(ProfileViewModel::class.java)
 }
