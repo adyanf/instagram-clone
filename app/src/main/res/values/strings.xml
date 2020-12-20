@@ -32,4 +32,7 @@
     <string name="menu_photo">Add Photos</string>
     <string name="profile_screen">PROFILE</string>
     <string name="menu_profile">Profile</string>
+
+    <!--posts-->
+    <string name="post_like_label">%1d Likes</string>
 </resources>
