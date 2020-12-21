@@ -9,6 +9,10 @@ apply plugin: 'kotlin-kapt'
 android {
     // user the variables like compile_sdk_version to keep the dependencies same throughout the application
     compileSdkVersion rootProject.ext.compile_sdk_version
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 
     defaultConfig {
         applicationId "com.adyanf.clone.instagram"
@@ -48,8 +52,7 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:$constraint_version"
 
     // Material Design
-    implementation "com.google.android.material:material:$support_library_version"
-
+    implementation "com.google.android.material:material:$material_design_version"
     // RecyclerView
     implementation "androidx.recyclerview:recyclerview:$support_library_version"
 
