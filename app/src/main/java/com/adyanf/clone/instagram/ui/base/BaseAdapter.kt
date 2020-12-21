@@ -5,8 +5,9 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
 
-abstract class BaseAdapter<T : Any, VH : BaseItemViewHolder<T, out BaseItemViewModel<T>>>(
+abstract class BaseAdapter<T : Any, VH : BaseItemViewHolder<T, out BaseItemViewModel<T>, out ViewBinding>>(
     parentLifecycle: Lifecycle,
     private val dataList: ArrayList<T>
 ) : RecyclerView.Adapter<VH>() {
@@ -20,7 +21,7 @@ abstract class BaseAdapter<T : Any, VH : BaseItemViewHolder<T, out BaseItemViewM
                 recyclerView?.run {
                     for (i in 0 until childCount) {
                         getChildAt(i)?.let {
-                            (getChildViewHolder(it) as BaseItemViewHolder<*, *>)
+                            (getChildViewHolder(it) as BaseItemViewHolder<*, *, *>)
                                 .run {
                                     onDestroy()
                                     viewModel.onManualCleared()
@@ -35,7 +36,7 @@ abstract class BaseAdapter<T : Any, VH : BaseItemViewHolder<T, out BaseItemViewM
                 recyclerView?.run {
                     for (i in 0 until childCount) {
                         getChildAt(i)?.let {
-                            (getChildViewHolder(it) as BaseItemViewHolder<*, *>).onStop()
+                            (getChildViewHolder(it) as BaseItemViewHolder<*, *, *>).onStop()
                         }
                     }
                 }
@@ -50,7 +51,7 @@ abstract class BaseAdapter<T : Any, VH : BaseItemViewHolder<T, out BaseItemViewM
                         if (first in 0..last)
                             for (i in first..last) {
                                 findViewHolderForAdapterPosition(i)?.let {
-                                    (it as BaseItemViewHolder<*, *>).onStart()
+                                    (it as BaseItemViewHolder<*, *, *>).onStart()
                                 }
                             }
                     }

@@ -1,16 +1,17 @@
 package com.adyanf.clone.instagram.ui.dummies
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.adyanf.clone.instagram.R
+import com.adyanf.clone.instagram.databinding.FragmentDummiesBinding
 import com.adyanf.clone.instagram.di.component.FragmentComponent
 import com.adyanf.clone.instagram.ui.base.BaseFragment
-import kotlinx.android.synthetic.main.fragment_dummies.*
 import javax.inject.Inject
 
-class DummiesFragment : BaseFragment<DummiesViewModel>() {
+class DummiesFragment : BaseFragment<DummiesViewModel, FragmentDummiesBinding>() {
 
     companion object {
 
@@ -30,7 +31,11 @@ class DummiesFragment : BaseFragment<DummiesViewModel>() {
     @Inject
     lateinit var dummiesAdapter: DummiesAdapter
 
-    override fun provideLayoutId(): Int = R.layout.fragment_dummies
+    override fun provideViewBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentDummiesBinding = FragmentDummiesBinding.inflate(inflater, container, false)
+
 
     override fun injectDependencies(fragmentComponent: FragmentComponent) {
         fragmentComponent.inject(this)
@@ -43,8 +48,7 @@ class DummiesFragment : BaseFragment<DummiesViewModel>() {
     }
 
     override fun setupView(view: View) {
-        rv_dummy.layoutManager = linearLayoutManager
-        rv_dummy.adapter = dummiesAdapter
+        binding.rvDummy.layoutManager = linearLayoutManager
+        binding.rvDummy.adapter = dummiesAdapter
     }
-
 }

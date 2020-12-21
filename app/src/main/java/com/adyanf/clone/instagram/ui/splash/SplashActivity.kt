@@ -2,21 +2,23 @@ package com.adyanf.clone.instagram.ui.splash
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.lifecycle.Observer
-import com.adyanf.clone.instagram.R
+import com.adyanf.clone.instagram.databinding.ActivitySplashBinding
 import com.adyanf.clone.instagram.di.component.ActivityComponent
 import com.adyanf.clone.instagram.ui.base.BaseActivity
 import com.adyanf.clone.instagram.ui.login.LoginActivity
 import com.adyanf.clone.instagram.ui.main.MainActivity
 import com.adyanf.clone.instagram.utils.common.Event
 
-class SplashActivity : BaseActivity<SplashViewModel>() {
+class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
 
     companion object {
         const val TAG = "SplashActivity"
     }
 
-    override fun provideLayoutId(): Int = R.layout.activity_splash
+    override fun provideViewBinding(layoutInflater: LayoutInflater): ActivitySplashBinding =
+        ActivitySplashBinding.inflate(layoutInflater)
 
     override fun injectDependencies(activityComponent: ActivityComponent) {
         activityComponent.inject(this)

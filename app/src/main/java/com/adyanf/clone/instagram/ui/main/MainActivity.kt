@@ -1,28 +1,30 @@
 package com.adyanf.clone.instagram.ui.main
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.adyanf.clone.instagram.R
+import com.adyanf.clone.instagram.databinding.ActivityMainBinding
 import com.adyanf.clone.instagram.di.component.ActivityComponent
 import com.adyanf.clone.instagram.ui.base.BaseActivity
 import com.adyanf.clone.instagram.ui.home.HomeFragment
 import com.adyanf.clone.instagram.ui.photo.PhotoFragment
 import com.adyanf.clone.instagram.ui.profile.ProfileFragment
-import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : BaseActivity<MainViewModel>() {
+class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
 
     private var activeFragment: Fragment? = null
 
-    override fun provideLayoutId(): Int = R.layout.activity_main
+    override fun provideViewBinding(layoutInflater: LayoutInflater): ActivityMainBinding =
+        ActivityMainBinding.inflate(layoutInflater)
 
     override fun injectDependencies(activityComponent: ActivityComponent) {
         activityComponent.inject(this)
     }
 
     override fun setupView(savedInstanceState: Bundle?) {
-        bottom_navigation.run {
+        binding.bottomNavigation.run {
             itemIconTintList = null
             setOnNavigationItemSelectedListener {
                 when (it.itemId) {

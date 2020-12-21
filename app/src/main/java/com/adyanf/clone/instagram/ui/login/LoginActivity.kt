@@ -4,30 +4,31 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
 import androidx.lifecycle.Observer
-import com.adyanf.clone.instagram.R
+import com.adyanf.clone.instagram.databinding.ActivityLoginBinding
 import com.adyanf.clone.instagram.di.component.ActivityComponent
 import com.adyanf.clone.instagram.ui.base.BaseActivity
 import com.adyanf.clone.instagram.ui.main.MainActivity
 import com.adyanf.clone.instagram.ui.signup.SignUpActivity
 import com.adyanf.clone.instagram.utils.common.Status
-import kotlinx.android.synthetic.main.activity_login.*
 
-class LoginActivity : BaseActivity<LoginViewModel>() {
+class LoginActivity : BaseActivity<LoginViewModel, ActivityLoginBinding>() {
 
     companion object {
         const val TAG = "LoginActivity"
     }
 
-    override fun provideLayoutId(): Int = R.layout.activity_login
+    override fun provideViewBinding(layoutInflater: LayoutInflater): ActivityLoginBinding =
+        ActivityLoginBinding.inflate(layoutInflater)
 
     override fun injectDependencies(activityComponent: ActivityComponent) {
         activityComponent.inject(this)
     }
 
     override fun setupView(savedInstanceState: Bundle?) {
-        et_email.addTextChangedListener(object : TextWatcher {
+        binding.etEmail.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -37,7 +38,7 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        et_password.addTextChangedListener(object : TextWatcher {
+        binding.etPassword.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -47,8 +48,8 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        bt_login.setOnClickListener { viewModel.onLoginButtonClicked() }
-        bt_signup.setOnClickListener { viewModel.onSignUpButtonClicked() }
+        binding.btLogin.setOnClickListener { viewModel.onLoginButtonClicked() }
+        binding.btSignup.setOnClickListener { viewModel.onSignUpButtonClicked() }
     }
 
     override fun setupObservers() {
@@ -69,31 +70,31 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
         })
 
         viewModel.emailField.observe(this, Observer {
-            if (et_email.text.toString() != it) et_email.setText(it)
+            if (binding.etEmail.text.toString() != it) binding.etEmail.setText(it)
         })
 
         viewModel.emailValidation.observe(this, Observer {
             when (it.status) {
-                Status.ERROR -> layout_email.error = it.data?.run { getString(this) }
-                else -> layout_email.isErrorEnabled = false
+                Status.ERROR -> binding.layoutEmail.error = it.data?.run { getString(this) }
+                else -> binding.layoutEmail.isErrorEnabled = false
             }
         })
 
         viewModel.passwordField.observe(this, Observer {
-            if (et_password.text.toString() != it) et_password.setText(it)
+            if (binding.etPassword.text.toString() != it) binding.etPassword.setText(it)
         })
 
         viewModel.passwordValidation.observe(this, Observer {
             when (it.status) {
-                Status.ERROR -> layout_password.error = it.data?.run { getString(this) }
-                else -> layout_password.isErrorEnabled = false
+                Status.ERROR -> binding.layoutPassword.error = it.data?.run { getString(this) }
+                else -> binding.layoutPassword.isErrorEnabled = false
             }
         })
 
         viewModel.loggingIn.observe(this, Observer {
-            pb_loading.visibility = if (it) View.VISIBLE else View.GONE
-            bt_login.isEnabled = !it
-            bt_signup.isEnabled = !it
+            binding.pbLoading.visibility = if (it) View.VISIBLE else View.GONE
+            binding.btLogin.isEnabled = !it
+            binding.btSignup.isEnabled = !it
         })
     }
 }

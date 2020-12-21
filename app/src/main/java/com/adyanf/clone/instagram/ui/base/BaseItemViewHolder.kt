@@ -3,13 +3,13 @@ package com.adyanf.clone.instagram.ui.base
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
 import com.adyanf.clone.instagram.InstagramApplication
 import com.adyanf.clone.instagram.di.component.DaggerViewHolderComponent
 import com.adyanf.clone.instagram.di.component.ViewHolderComponent
@@ -17,10 +17,16 @@ import com.adyanf.clone.instagram.di.module.ViewHolderModule
 import com.adyanf.clone.instagram.utils.display.Toaster
 import javax.inject.Inject
 
-abstract class BaseItemViewHolder<T : Any, VM : BaseItemViewModel<T>>(
-    @LayoutRes layoutId: Int, parent: ViewGroup
-) : RecyclerView.ViewHolder(LayoutInflater.from(parent.context).inflate(layoutId, parent, false)),
-    LifecycleOwner {
+abstract class BaseItemViewHolder<T : Any, VM : BaseItemViewModel<T>, VB: ViewBinding>(
+    val binding: VB
+) : RecyclerView.ViewHolder(binding.root), LifecycleOwner {
+
+    constructor(
+        parent: ViewGroup,
+        creator: (inflater: LayoutInflater, root: ViewGroup, attachToRoot: Boolean) -> VB
+    ) : this(
+        creator(LayoutInflater.from(parent.context), parent, false)
+    )
 
     init {
         onCreate()

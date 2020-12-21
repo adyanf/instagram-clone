@@ -24,7 +24,7 @@ import io.reactivex.disposables.CompositeDisposable
  * BaseViewModel subclass as parameter
  */
 @Module
-class ActivityModule(private val activity: BaseActivity<*>) {
+class ActivityModule(private val activity: BaseActivity<*, *>) {
 
     @Provides
     fun provideLinearLayoutManager(): LinearLayoutManager = LinearLayoutManager(activity)

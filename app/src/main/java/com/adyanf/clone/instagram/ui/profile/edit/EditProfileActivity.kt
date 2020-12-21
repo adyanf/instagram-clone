@@ -4,20 +4,21 @@ import android.app.Activity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import com.adyanf.clone.instagram.R
+import com.adyanf.clone.instagram.databinding.ActivityEditProfileBinding
 import com.adyanf.clone.instagram.di.component.ActivityComponent
 import com.adyanf.clone.instagram.ui.base.BaseActivity
 import com.adyanf.clone.instagram.utils.common.GlideHelper
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import kotlinx.android.synthetic.main.activity_edit_profile.*
-import kotlinx.android.synthetic.main.activity_edit_profile.ivProfile
 
-class EditProfileActivity : BaseActivity<EditProfileViewModel>() {
+class EditProfileActivity : BaseActivity<EditProfileViewModel, ActivityEditProfileBinding>() {
 
-    override fun provideLayoutId(): Int = R.layout.activity_edit_profile
+    override fun provideViewBinding(layoutInflater: LayoutInflater): ActivityEditProfileBinding =
+        ActivityEditProfileBinding.inflate(layoutInflater)
 
     override fun injectDependencies(activityComponent: ActivityComponent) {
         activityComponent.inject(this)
@@ -27,34 +28,34 @@ class EditProfileActivity : BaseActivity<EditProfileViewModel>() {
         super.setupObservers()
 
         viewModel.name.observe(this, Observer {
-            if (et_name.text.toString() != it) et_name.setText(it)
+            if (binding.etName.text.toString() != it) binding.etName.setText(it)
         })
 
         viewModel.bio.observe(this, Observer {
-            if (et_bio.text.toString() != it) et_bio.setText(it)
+            if (binding.etBio.text.toString() != it) binding.etBio.setText(it)
         })
         viewModel.email.observe(this, Observer {
-            if (et_email.text.toString() != it) et_email.setText(it)
+            if (binding.etEmail.text.toString() != it) binding.etEmail.setText(it)
         })
         viewModel.profilePicUrl.observe(this, Observer {
             it?.run {
                 val glideRequest = Glide
-                    .with(ivProfile.context)
+                    .with(binding.ivProfile.context)
                     .load(GlideHelper.getProtectedUrl(url, headers))
                     .apply(RequestOptions.circleCropTransform())
                     .apply(RequestOptions.placeholderOf(R.drawable.ic_profile_selected))
 
                 if (placeholderWidth > 0 && placeholderHeight > 0) {
-                    val params = ivProfile.layoutParams as ViewGroup.LayoutParams
+                    val params = binding.ivProfile.layoutParams as ViewGroup.LayoutParams
                     params.width = placeholderWidth
                     params.height = placeholderHeight
-                    ivProfile.layoutParams = params
+                    binding.ivProfile.layoutParams = params
                     glideRequest
                         .apply(RequestOptions.overrideOf(placeholderWidth, placeholderHeight))
                         .apply(RequestOptions.placeholderOf(R.drawable.ic_profile_unselected))
                 }
-                glideRequest.into(ivProfile)
-            } ?: ivProfile.setImageResource(R.drawable.ic_profile_add_pic)
+                glideRequest.into(binding.ivProfile)
+            } ?: binding.ivProfile.setImageResource(R.drawable.ic_profile_add_pic)
         })
 
         viewModel.close.observe(this, Observer {
@@ -72,10 +73,10 @@ class EditProfileActivity : BaseActivity<EditProfileViewModel>() {
     }
 
     override fun setupView(savedInstanceState: Bundle?) {
-        toolbar.setNavigationOnClickListener {
+        binding.toolbar.setNavigationOnClickListener {
             viewModel.onCloseClick()
         }
-        toolbar.setOnMenuItemClickListener {
+        binding.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.save -> {
                     clearFocus()
@@ -86,7 +87,7 @@ class EditProfileActivity : BaseActivity<EditProfileViewModel>() {
             }
         }
 
-        et_name.addTextChangedListener(object : TextWatcher {
+        binding.etName.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -96,7 +97,7 @@ class EditProfileActivity : BaseActivity<EditProfileViewModel>() {
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        et_bio.addTextChangedListener(object : TextWatcher {
+        binding.etBio.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -108,7 +109,7 @@ class EditProfileActivity : BaseActivity<EditProfileViewModel>() {
     }
 
     private fun clearFocus() {
-        et_name.clearFocus()
-        et_bio.clearFocus()
+        binding.etName.clearFocus()
+        binding.etBio.clearFocus()
     }
 }

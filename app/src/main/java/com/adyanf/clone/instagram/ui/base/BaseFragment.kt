@@ -4,10 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.viewbinding.ViewBinding
 import com.adyanf.clone.instagram.InstagramApplication
 import com.adyanf.clone.instagram.di.component.DaggerFragmentComponent
 import com.adyanf.clone.instagram.di.component.FragmentComponent
@@ -18,10 +18,14 @@ import javax.inject.Inject
  * Reference for generics: https://kotlinlang.org/docs/reference/generics.html
  * Basically BaseFragment will take any class that extends BaseViewModel
  */
-abstract class BaseFragment<VM : BaseViewModel> : Fragment() {
+abstract class BaseFragment<VM : BaseViewModel, VB: ViewBinding> : Fragment() {
 
     @Inject
     lateinit var viewModel: VM
+
+    private var _binding: VB? = null
+
+    protected val binding: VB get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         injectDependencies(buildFragmentComponent())
@@ -38,8 +42,15 @@ abstract class BaseFragment<VM : BaseViewModel> : Fragment() {
             .build()
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-        inflater.inflate(provideLayoutId(), container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        _binding = provideViewBinding(inflater, container)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
     protected open fun setupObservers() {
         viewModel.messageString.observe(this, Observer {
@@ -62,11 +73,10 @@ abstract class BaseFragment<VM : BaseViewModel> : Fragment() {
     fun showMessage(@StringRes resId: Int) = showMessage(getString(resId))
 
     fun goBack() {
-        if (activity is BaseActivity<*>) (activity as BaseActivity<*>).goBack()
+        if (activity is BaseActivity<*, *>) (activity as BaseActivity<*, *>).goBack()
     }
 
-    @LayoutRes
-    protected abstract fun provideLayoutId(): Int
+    protected abstract fun provideViewBinding(inflater: LayoutInflater, container: ViewGroup?): VB
 
     protected abstract fun injectDependencies(fragmentComponent: FragmentComponent)
 

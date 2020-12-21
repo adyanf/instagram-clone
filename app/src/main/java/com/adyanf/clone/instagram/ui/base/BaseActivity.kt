@@ -1,10 +1,11 @@
 package com.adyanf.clone.instagram.ui.base
 
 import android.os.Bundle
-import androidx.annotation.LayoutRes
+import android.view.LayoutInflater
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.viewbinding.ViewBinding
 import com.adyanf.clone.instagram.InstagramApplication
 import com.adyanf.clone.instagram.di.component.ActivityComponent
 import com.adyanf.clone.instagram.di.component.DaggerActivityComponent
@@ -16,15 +17,18 @@ import javax.inject.Inject
  * Reference for generics: https://kotlinlang.org/docs/reference/generics.html
  * Basically BaseActivity will take any class that extends BaseViewModel
  */
-abstract class BaseActivity<VM : BaseViewModel> : AppCompatActivity() {
+abstract class BaseActivity<VM : BaseViewModel, VB: ViewBinding> : AppCompatActivity() {
 
     @Inject
     lateinit var viewModel: VM
 
+    lateinit var binding: VB
+
     override fun onCreate(savedInstanceState: Bundle?) {
         injectDependencies(buildActivityComponent())
         super.onCreate(savedInstanceState)
-        setContentView(provideLayoutId())
+        binding = provideViewBinding(layoutInflater)
+        setContentView(binding.root)
         setupObservers()
         setupView(savedInstanceState)
         viewModel.onCreate()
@@ -59,8 +63,7 @@ abstract class BaseActivity<VM : BaseViewModel> : AppCompatActivity() {
         else super.onBackPressed()
     }
 
-    @LayoutRes
-    protected abstract fun provideLayoutId(): Int
+    protected abstract fun provideViewBinding(layoutInflater: LayoutInflater): VB
 
     protected abstract fun injectDependencies(activityComponent: ActivityComponent)
 

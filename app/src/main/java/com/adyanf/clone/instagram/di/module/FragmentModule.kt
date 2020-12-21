@@ -21,7 +21,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.processors.PublishProcessor
 
 @Module
-class FragmentModule(private val fragment: BaseFragment<*>) {
+class FragmentModule(private val fragment: BaseFragment<*, *>) {
 
     @Provides
     fun provideLinearLayoutManager(): LinearLayoutManager = LinearLayoutManager(fragment.context)

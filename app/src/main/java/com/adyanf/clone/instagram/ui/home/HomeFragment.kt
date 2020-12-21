@@ -1,18 +1,19 @@
 package com.adyanf.clone.instagram.ui.home
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.adyanf.clone.instagram.R
+import com.adyanf.clone.instagram.databinding.FragmentHomeBinding
 import com.adyanf.clone.instagram.di.component.FragmentComponent
 import com.adyanf.clone.instagram.ui.base.BaseFragment
 import com.adyanf.clone.instagram.ui.home.post.PostsAdapter
-import kotlinx.android.synthetic.main.fragment_home.*
 import javax.inject.Inject
 
-class HomeFragment : BaseFragment<HomeViewModel>() {
+class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
 
     @Inject
     lateinit var linearLayoutManager: LinearLayoutManager
@@ -20,7 +21,10 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
     @Inject
     lateinit var postsAdapter: PostsAdapter
 
-    override fun provideLayoutId(): Int = R.layout.fragment_home
+    override fun provideViewBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentHomeBinding = FragmentHomeBinding.inflate(inflater, container, false)
 
     override fun injectDependencies(fragmentComponent: FragmentComponent) {
         fragmentComponent.inject(this)
@@ -34,13 +38,13 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
         })
 
         viewModel.loading.observe(this, Observer {
-            progressBar.isEnabled = it
-            progressBar.visibility = if (it) View.VISIBLE else View.GONE
+            binding.progressBar.isEnabled = it
+            binding.progressBar.visibility = if (it) View.VISIBLE else View.GONE
         })
     }
 
     override fun setupView(view: View) {
-        rvPosts.apply {
+        binding.rvPosts.apply {
             layoutManager = linearLayoutManager
             adapter = postsAdapter
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
