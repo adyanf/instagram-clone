@@ -4,6 +4,7 @@ import com.adyanf.clone.instagram.data.remote.request.DummyRequest
 import com.adyanf.clone.instagram.data.remote.request.LoginRequest
 import com.adyanf.clone.instagram.data.remote.request.PostLikeModifyRequest
 import com.adyanf.clone.instagram.data.remote.request.SignUpRequest
+import com.adyanf.clone.instagram.data.remote.request.UpdateMyInfoRequest
 import com.adyanf.clone.instagram.data.remote.response.DummyResponse
 import com.adyanf.clone.instagram.data.remote.response.GeneralResponse
 import com.adyanf.clone.instagram.data.remote.response.LoginResponse
@@ -66,12 +67,20 @@ interface NetworkService {
         @Header(Networking.HEADER_API_KEY) apiKey: String = Networking.API_KEY
     ): Single<GeneralResponse>
 
-    @GET(Endpoints.FETCH_MY_INFO)
+    @GET(Endpoints.MY_INFO)
     fun doFetchMyInfoCall(
         @Header(Networking.HEADER_USER_ID) userId: String,
         @Header(Networking.HEADER_ACCESS_TOKEN) accessToken: String,
         @Header(Networking.HEADER_API_KEY) apiKey: String = Networking.API_KEY
     ): Single<MyInfoResponse>
+
+    @PUT(Endpoints.MY_INFO)
+    fun doUpdateMyInfoCall(
+        @Body request: UpdateMyInfoRequest,
+        @Header(Networking.HEADER_USER_ID) userId: String,
+        @Header(Networking.HEADER_ACCESS_TOKEN) accessToken: String,
+        @Header(Networking.HEADER_API_KEY) apiKey: String = Networking.API_KEY
+    ): Single<GeneralResponse>
 
     @GET(Endpoints.MY_POST_LIST)
     fun doMyPostListCall(

@@ -7,10 +7,11 @@ import com.adyanf.clone.instagram.data.model.User
 import com.adyanf.clone.instagram.data.remote.NetworkService
 import com.adyanf.clone.instagram.data.remote.request.LoginRequest
 import com.adyanf.clone.instagram.data.remote.request.SignUpRequest
+import com.adyanf.clone.instagram.data.remote.request.UpdateMyInfoRequest
+import com.adyanf.clone.instagram.data.remote.response.GeneralResponse
 import io.reactivex.Single
 import javax.inject.Inject
 import javax.inject.Singleton
-
 @Singleton
 class UserRepository @Inject constructor(
     private val networkService: NetworkService,
@@ -30,6 +31,10 @@ class UserRepository @Inject constructor(
         userPreferences.removeUserName()
         userPreferences.removeUserEmail()
         userPreferences.removeAccessToken()
+    }
+
+    fun updateUserName(userName: String) {
+        userPreferences.setUserName(userName)
     }
 
     fun getCurrentUser(): User? {
@@ -76,4 +81,11 @@ class UserRepository @Inject constructor(
     fun doFetchInfo(user: User): Single<MyInfo> =
         networkService.doFetchMyInfoCall(user.id, user.accessToken)
             .map { it.data }
+
+    fun doUpdateInfo(user: User, myInfo: MyInfo): Single<Any> {
+        val request = UpdateMyInfoRequest(myInfo.name, myInfo.profilePicUrl, myInfo.tagline)
+        return networkService.doUpdateMyInfoCall(request, user.id, user.accessToken)
+            .map { it.message }
+    }
 }
+

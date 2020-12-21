@@ -21,7 +21,7 @@ class ProfileViewModel(
     compositeDisposable: CompositeDisposable,
     networkHelper: NetworkHelper,
     private val userRepository: UserRepository,
-    postRepository: PostRepository
+    private val postRepository: PostRepository
 ) : BaseViewModel(schedulerProvider, compositeDisposable, networkHelper) {
 
     private val user = userRepository.getCurrentUser()!!
@@ -35,6 +35,7 @@ class ProfileViewModel(
     )
 
     val launchLogin: MutableLiveData<Event<Boolean>> = MutableLiveData()
+    val launchEditProfile: MutableLiveData<Event<Boolean>> = MutableLiveData()
     val name: LiveData<String> = Transformations.map(myInfo) { it.data?.name }
     val profileImage: LiveData<Image> = Transformations.map(myInfo) {
         it.data?.profilePicUrl?.run { Image(this, headers) }
@@ -43,18 +44,26 @@ class ProfileViewModel(
     val tagline: LiveData<String> = Transformations.map(myInfo) { it.data?.tagline }
 
     init {
+        fetchUserInfo()
+        fetchUserPost()
+    }
+
+    fun fetchUserInfo() {
         compositeDisposable.add(
             userRepository.doFetchInfo(user)
                 .subscribeOn(schedulerProvider.io())
                 .subscribe(
                     {
-                       myInfo.postValue(Resource.success(it))
+                        myInfo.postValue(Resource.success(it))
                     },
                     {
                         handleNetworkError(it)
                     }
                 )
         )
+    }
+
+    private fun fetchUserPost() {
         compositeDisposable.add(
             postRepository.getMyPostList(user)
                 .subscribeOn(schedulerProvider.io())
@@ -95,6 +104,6 @@ class ProfileViewModel(
     }
 
     fun onClickEditProfile() {
-
+        launchEditProfile.postValue(Event(true))
     }
 }

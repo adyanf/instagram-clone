@@ -14,7 +14,6 @@ import com.adyanf.clone.instagram.di.component.FragmentComponent
 import com.adyanf.clone.instagram.di.module.FragmentModule
 import com.adyanf.clone.instagram.utils.display.Toaster
 import javax.inject.Inject
-
 /**
  * Reference for generics: https://kotlinlang.org/docs/reference/generics.html
  * Basically BaseFragment will take any class that extends BaseViewModel
@@ -73,3 +72,4 @@ abstract class BaseFragment<VM : BaseViewModel> : Fragment() {
 
     protected abstract fun setupView(view: View)
 }
+

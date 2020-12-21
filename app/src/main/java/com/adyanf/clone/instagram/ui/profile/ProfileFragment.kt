@@ -1,5 +1,6 @@
 package com.adyanf.clone.instagram.ui.profile
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.Html
@@ -10,7 +11,9 @@ import com.adyanf.clone.instagram.R
 import com.adyanf.clone.instagram.di.component.FragmentComponent
 import com.adyanf.clone.instagram.ui.base.BaseFragment
 import com.adyanf.clone.instagram.ui.login.LoginActivity
+import com.adyanf.clone.instagram.ui.profile.edit.EditProfileActivity
 import com.adyanf.clone.instagram.utils.common.GlideHelper
+import com.adyanf.clone.instagram.utils.display.Toaster
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import kotlinx.android.synthetic.main.fragment_profile.*
@@ -65,6 +68,12 @@ class ProfileFragment : BaseFragment<ProfileViewModel>() {
                 activity?.finish()
             }
         })
+
+        viewModel.launchEditProfile.observe(this, Observer {
+            it.getIfNotHandled()?.run {
+                startActivityForResult(Intent(context, EditProfileActivity::class.java), RQ_EDIT_PROFILE)
+            }
+        })
     }
 
     override fun setupView(view: View) {
@@ -77,8 +86,20 @@ class ProfileFragment : BaseFragment<ProfileViewModel>() {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == RQ_EDIT_PROFILE && resultCode == Activity.RESULT_OK) {
+            context?.let {
+                viewModel.fetchUserInfo()
+                Toaster.show(it, "My Info Updated")
+            }
+        }
+    }
+
     companion object {
         const val TAG = "ProfileFragment"
+        const val RQ_EDIT_PROFILE = 10000
 
         fun newInstance(): ProfileFragment {
             val args = Bundle()

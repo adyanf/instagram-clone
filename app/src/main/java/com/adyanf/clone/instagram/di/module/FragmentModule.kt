@@ -1,6 +1,6 @@
 package com.adyanf.clone.instagram.di.module
 
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.adyanf.clone.instagram.data.repository.DummyRepository
 import com.adyanf.clone.instagram.data.repository.PostRepository
@@ -33,7 +33,7 @@ class FragmentModule(private val fragment: BaseFragment<*>) {
         networkHelper: NetworkHelper,
         dummyRepository: DummyRepository
     ): DummiesViewModel =
-        ViewModelProviders.of(fragment,
+        ViewModelProvider(fragment,
             ViewModelProviderFactory(DummiesViewModel::class) {
                 DummiesViewModel(schedulerProvider, compositeDisposable, networkHelper, dummyRepository)
             }
@@ -53,7 +53,7 @@ class FragmentModule(private val fragment: BaseFragment<*>) {
         userRepository: UserRepository,
         postRepository: PostRepository
     ): HomeViewModel =
-        ViewModelProviders.of(fragment,
+        ViewModelProvider(fragment,
             ViewModelProviderFactory(HomeViewModel::class) {
                 HomeViewModel(
                     schedulerProvider,
@@ -73,7 +73,7 @@ class FragmentModule(private val fragment: BaseFragment<*>) {
         compositeDisposable: CompositeDisposable,
         networkHelper: NetworkHelper
     ): PhotoViewModel =
-        ViewModelProviders.of(fragment,
+        ViewModelProvider(fragment,
             ViewModelProviderFactory(PhotoViewModel::class) {
                 PhotoViewModel(schedulerProvider, compositeDisposable, networkHelper)
             }
@@ -87,7 +87,7 @@ class FragmentModule(private val fragment: BaseFragment<*>) {
         userRepository: UserRepository,
         postRepository: PostRepository
     ): ProfileViewModel =
-        ViewModelProviders.of(fragment,
+        ViewModelProvider(fragment,
             ViewModelProviderFactory(ProfileViewModel::class) {
                 ProfileViewModel(schedulerProvider, compositeDisposable, networkHelper, userRepository, postRepository)
             }
