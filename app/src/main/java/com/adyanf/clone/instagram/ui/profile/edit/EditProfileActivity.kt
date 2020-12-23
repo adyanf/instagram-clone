@@ -6,12 +6,12 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import com.adyanf.clone.instagram.R
 import com.adyanf.clone.instagram.databinding.ActivityEditProfileBinding
 import com.adyanf.clone.instagram.di.component.ActivityComponent
 import com.adyanf.clone.instagram.ui.base.BaseActivity
 import com.adyanf.clone.instagram.utils.common.GlideHelper
+import com.adyanf.clone.instagram.utils.display.LoadingDialog
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 
@@ -27,17 +27,17 @@ class EditProfileActivity : BaseActivity<EditProfileViewModel, ActivityEditProfi
     override fun setupObservers() {
         super.setupObservers()
 
-        viewModel.name.observe(this, Observer {
+        viewModel.name.observe(this, {
             if (binding.etName.text.toString() != it) binding.etName.setText(it)
         })
 
-        viewModel.bio.observe(this, Observer {
+        viewModel.bio.observe(this, {
             if (binding.etBio.text.toString() != it) binding.etBio.setText(it)
         })
-        viewModel.email.observe(this, Observer {
+        viewModel.email.observe(this, {
             if (binding.etEmail.text.toString() != it) binding.etEmail.setText(it)
         })
-        viewModel.profilePicUrl.observe(this, Observer {
+        viewModel.profilePicUrl.observe(this, {
             it?.run {
                 val glideRequest = Glide
                     .with(binding.ivProfile.context)
@@ -58,16 +58,26 @@ class EditProfileActivity : BaseActivity<EditProfileViewModel, ActivityEditProfi
             } ?: binding.ivProfile.setImageResource(R.drawable.ic_profile_add_pic)
         })
 
-        viewModel.close.observe(this, Observer {
+        viewModel.close.observe(this, {
             it.getIfNotHandled()?.run {
                 setResult(Activity.RESULT_CANCELED)
                 finish()
             }
         })
-        viewModel.updated.observe(this, Observer {
+        viewModel.updated.observe(this, {
             it.getIfNotHandled()?.run {
                 setResult(Activity.RESULT_OK)
                 finish()
+            }
+        })
+
+        viewModel.loading.observe(this, {
+            it.getIfNotHandled()?.let { isLoading ->
+                if (isLoading) {
+                    LoadingDialog.show(getString(R.string.saving_profile), supportFragmentManager)
+                } else {
+                    LoadingDialog.dismiss()
+                }
             }
         })
     }

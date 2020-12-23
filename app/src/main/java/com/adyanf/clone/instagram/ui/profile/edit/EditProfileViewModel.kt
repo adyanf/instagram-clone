@@ -29,6 +29,7 @@ class EditProfileViewModel(
     private val myInfo: MutableLiveData<MyInfo> = MutableLiveData()
     val close: MutableLiveData<Event<Boolean>> = MutableLiveData()
     val updated: MutableLiveData<Event<Boolean>> = MutableLiveData()
+    val loading: MutableLiveData<Event<Boolean>> = MutableLiveData()
     val name: LiveData<String> = Transformations.map(myInfo) { it.name }
     val bio: LiveData<String> = Transformations.map(myInfo) { it.tagline }
     val profilePicUrl: LiveData<Image> = Transformations.map(myInfo) {
@@ -78,15 +79,18 @@ class EditProfileViewModel(
 
     fun onSaveClick() {
         myInfo.value?.let { newMyInfo ->
+            loading.postValue(Event(true))
             compositeDisposable.add(
                 userRepository.doUpdateInfo(user, newMyInfo)
                     .subscribeOn(schedulerProvider.io())
                     .subscribe(
                         {
+                            loading.postValue(Event(false))
                             userRepository.updateUserName(newMyInfo.name)
                             updated.postValue(Event(true))
                         },
                         {
+                            loading.postValue(Event(false))
                             handleNetworkError(it)
                         }
                     )

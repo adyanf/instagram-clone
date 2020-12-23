@@ -41,6 +41,7 @@
     <string name="logout_button_text">Logout</string>
     <string name="posts_label"><![CDATA[<b>%1d</b> Posts]]></string>
     <string name="save">Save</string>
+    <string name="saving_profile">Saving profile, please wait …</string>
     <string name="change_photo">Change Photo</string>
     <string name="name_text">Name</string>
     <string name="email_text">Email</string>
