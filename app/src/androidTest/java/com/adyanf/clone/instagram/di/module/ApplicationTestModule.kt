@@ -4,12 +4,13 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
-import com.adyanf.clone.instagram.BuildConfig
 import com.adyanf.clone.instagram.InstagramApplication
 import com.adyanf.clone.instagram.data.local.db.DatabaseService
+import com.adyanf.clone.instagram.data.remote.FakeNetworkService
 import com.adyanf.clone.instagram.data.remote.NetworkService
 import com.adyanf.clone.instagram.data.remote.Networking
 import com.adyanf.clone.instagram.utils.common.FileUtils
+import com.adyanf.clone.instagram.utils.network.FakeNetworkHelperImpl
 import com.adyanf.clone.instagram.utils.network.NetworkHelper
 import com.adyanf.clone.instagram.utils.rx.RxSchedulerProvider
 import com.adyanf.clone.instagram.utils.rx.SchedulerProvider
@@ -59,15 +60,12 @@ class ApplicationTestModule(private val application: InstagramApplication) {
 
     @Provides
     @Singleton
-    fun provideNetworkService(): NetworkService =
-        Networking.create(
-            BuildConfig.API_KEY,
-            BuildConfig.BASE_URL,
-            application.cacheDir,
-            10 * 1024 * 1024 // 10MB
-        )
+    fun provideNetworkService(): NetworkService {
+        Networking.API_KEY = "FAKE_API_KEY"
+        return FakeNetworkService()
+    }
 
     @Singleton
     @Provides
-    fun provideNetworkHelper(): NetworkHelper = NetworkHelper(application)
+    fun provideNetworkHelper(): NetworkHelper = FakeNetworkHelperImpl(application)
 }
