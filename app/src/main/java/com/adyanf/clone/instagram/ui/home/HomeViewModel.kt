@@ -50,8 +50,8 @@ class HomeViewModel(
                     {
                         allPostList.addAll(it)
 
-                        firstPostId = allPostList.maxBy { post -> post.createdAt.time }?.id
-                        lastPostId = allPostList.minBy { post -> post.createdAt.time }?.id
+                        firstPostId = allPostList.maxByOrNull { post -> post.createdAt.time }?.id
+                        lastPostId = allPostList.minByOrNull { post -> post.createdAt.time }?.id
 
                         loading.postValue(false)
                         posts.postValue(Resource.success(it))
