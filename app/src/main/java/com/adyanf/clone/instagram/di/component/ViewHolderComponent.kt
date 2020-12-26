@@ -2,7 +2,6 @@ package com.adyanf.clone.instagram.di.component
 
 import com.adyanf.clone.instagram.di.ViewModelScope
 import com.adyanf.clone.instagram.di.module.ViewHolderModule
-import com.adyanf.clone.instagram.ui.dummies.DummyItemViewHolder
 import com.adyanf.clone.instagram.ui.home.post.PostItemViewHolder
 import dagger.Component
 
@@ -12,8 +11,6 @@ import dagger.Component
     modules = [ViewHolderModule::class]
 )
 interface ViewHolderComponent {
-
-    fun inject(viewHolder: DummyItemViewHolder)
 
     fun inject(viewHolder: PostItemViewHolder)
 }

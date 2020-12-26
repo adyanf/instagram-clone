@@ -2,7 +2,6 @@ package com.adyanf.clone.instagram.ui.home.post
 
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import com.adyanf.clone.instagram.R
 import com.adyanf.clone.instagram.data.model.Post
 import com.adyanf.clone.instagram.databinding.ItemViewPostBinding
@@ -25,7 +24,7 @@ class PostItemViewHolder(parent: ViewGroup) :
     override fun setupObservers() {
         super.setupObservers()
 
-        viewModel.profileImage.observe(this, Observer {
+        viewModel.profileImage.observe(this) {
             it?.run {
                 val glideRequest = Glide
                     .with(binding.ivProfile.context)
@@ -44,13 +43,13 @@ class PostItemViewHolder(parent: ViewGroup) :
                 }
                 glideRequest.into(binding.ivProfile)
             }
-        })
+        }
 
-        viewModel.name.observe(this, Observer {
+        viewModel.name.observe(this) {
             binding.tvName.text = it
-        })
+        }
 
-        viewModel.imageDetail.observe(this, Observer {
+        viewModel.imageDetail.observe(this) {
             it?.run {
                 val glideRequest = Glide
                     .with(binding.ivPost.context)
@@ -67,21 +66,21 @@ class PostItemViewHolder(parent: ViewGroup) :
                 }
                 glideRequest.into(binding.ivPost)
             }
-        })
+        }
 
-        viewModel.isLiked.observe(this, Observer {
+        viewModel.isLiked.observe(this) {
             binding.ivLike.setImageResource(
                 if (it) R.drawable.ic_heart_selected else R.drawable.ic_heart_unselected
             )
-        })
+        }
 
-        viewModel.likesCount.observe(this, Observer {
+        viewModel.likesCount.observe(this) {
             binding.tvLikesCount.text = itemView.context.getString(R.string.post_like_label, it)
-        })
+        }
 
-        viewModel.postTime.observe(this, Observer {
+        viewModel.postTime.observe(this) {
             binding.tvTime.text = it
-        })
+        }
     }
 
     override fun setupView(view: View) {

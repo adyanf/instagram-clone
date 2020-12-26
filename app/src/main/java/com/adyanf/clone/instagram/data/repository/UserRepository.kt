@@ -1,6 +1,5 @@
 package com.adyanf.clone.instagram.data.repository
 
-import com.adyanf.clone.instagram.data.local.db.DatabaseService
 import com.adyanf.clone.instagram.data.local.prefs.UserPreferences
 import com.adyanf.clone.instagram.data.model.MyInfo
 import com.adyanf.clone.instagram.data.model.User
@@ -8,14 +7,12 @@ import com.adyanf.clone.instagram.data.remote.NetworkService
 import com.adyanf.clone.instagram.data.remote.request.LoginRequest
 import com.adyanf.clone.instagram.data.remote.request.SignUpRequest
 import com.adyanf.clone.instagram.data.remote.request.UpdateMyInfoRequest
-import com.adyanf.clone.instagram.data.remote.response.GeneralResponse
 import io.reactivex.Single
 import javax.inject.Inject
 import javax.inject.Singleton
 @Singleton
 class UserRepository @Inject constructor(
     private val networkService: NetworkService,
-    private val databaseService: DatabaseService,
     private val userPreferences: UserPreferences
 ) {
 

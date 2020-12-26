@@ -5,7 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.adyanf.clone.instagram.data.repository.UserRepository
 import com.adyanf.clone.instagram.ui.base.BaseViewModel
-import com.adyanf.clone.instagram.utils.common.*
+import com.adyanf.clone.instagram.utils.common.Event
+import com.adyanf.clone.instagram.utils.common.Resource
+import com.adyanf.clone.instagram.utils.common.Status
+import com.adyanf.clone.instagram.utils.common.Validation
+import com.adyanf.clone.instagram.utils.common.Validator
 import com.adyanf.clone.instagram.utils.network.NetworkHelper
 import com.adyanf.clone.instagram.utils.rx.SchedulerProvider
 import io.reactivex.disposables.CompositeDisposable

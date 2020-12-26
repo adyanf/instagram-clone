@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.adyanf.clone.instagram.data.repository.UserRepository
 import com.adyanf.clone.instagram.ui.base.BaseActivity
-import com.adyanf.clone.instagram.ui.dummy.DummyViewModel
 import com.adyanf.clone.instagram.ui.login.LoginViewModel
 import com.adyanf.clone.instagram.ui.main.MainSharedViewModel
 import com.adyanf.clone.instagram.ui.main.MainViewModel
@@ -40,16 +39,6 @@ class ActivityModule(private val activity: BaseActivity<*, *>) {
             SplashViewModel(schedulerProvider, compositeDisposable, networkHelper, userRepository)
             //this lambda creates and return SplashViewModel
         }).get(SplashViewModel::class.java)
-
-    @Provides
-    fun provideDummyViewModel(
-        schedulerProvider: SchedulerProvider,
-        compositeDisposable: CompositeDisposable,
-        networkHelper: NetworkHelper
-    ): DummyViewModel = ViewModelProvider(
-        activity, ViewModelProviderFactory(DummyViewModel::class) {
-            DummyViewModel(schedulerProvider, compositeDisposable, networkHelper)
-        }).get(DummyViewModel::class.java)
 
     @Provides
     fun provideLoginViewModel(

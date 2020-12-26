@@ -33,15 +33,15 @@ class ProfileFragment : BaseFragment<ProfileViewModel, FragmentProfileBinding>()
     override fun setupObservers() {
         super.setupObservers()
 
-        viewModel.name.observe(this, Observer {
+        viewModel.name.observe(this) {
             binding.tvName.text = it
-        })
+        }
 
-        viewModel.postCount.observe(this, Observer {
+        viewModel.postCount.observe(this) {
             binding.tvPostsCount.text = Html.fromHtml(getString(R.string.posts_label, it))
-        })
+        }
 
-        viewModel.profileImage.observe(this, Observer {
+        viewModel.profileImage.observe(this) {
             it?.run {
                 val glideRequest = Glide
                     .with(binding.ivProfile.context)
@@ -60,24 +60,24 @@ class ProfileFragment : BaseFragment<ProfileViewModel, FragmentProfileBinding>()
                 }
                 glideRequest.into(binding.ivProfile)
             }
-        })
+        }
 
-        viewModel.tagline.observe(this, Observer {
+        viewModel.tagline.observe(this) {
             binding.tvTagline.text = it
-        })
+        }
 
-        viewModel.launchLogin.observe(this, Observer {
+        viewModel.launchLogin.observe(this) {
             it.getIfNotHandled()?.run {
                 startActivity(Intent(context, LoginActivity::class.java))
                 activity?.finish()
             }
-        })
+        }
 
-        viewModel.launchEditProfile.observe(this, Observer {
+        viewModel.launchEditProfile.observe(this) {
             it.getIfNotHandled()?.run {
                 startActivityForResult(Intent(context, EditProfileActivity::class.java), RQ_EDIT_PROFILE)
             }
-        })
+        }
     }
 
     override fun setupView(view: View) {

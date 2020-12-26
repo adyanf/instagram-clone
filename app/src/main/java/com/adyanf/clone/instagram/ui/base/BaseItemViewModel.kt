@@ -5,7 +5,6 @@ import com.adyanf.clone.instagram.utils.network.NetworkHelper
 import com.adyanf.clone.instagram.utils.rx.SchedulerProvider
 import io.reactivex.disposables.CompositeDisposable
 
-
 abstract class BaseItemViewModel<T : Any>(
     schedulerProvider: SchedulerProvider,
     compositeDisposable: CompositeDisposable,

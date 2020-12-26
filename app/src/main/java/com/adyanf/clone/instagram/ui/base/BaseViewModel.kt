@@ -9,7 +9,6 @@ import com.adyanf.clone.instagram.utils.rx.SchedulerProvider
 import io.reactivex.disposables.CompositeDisposable
 import javax.net.ssl.HttpsURLConnection
 
-
 abstract class BaseViewModel(
     protected val schedulerProvider: SchedulerProvider,
     protected val compositeDisposable: CompositeDisposable,

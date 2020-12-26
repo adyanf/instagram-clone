@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.viewbinding.ViewBinding
 import com.adyanf.clone.instagram.InstagramApplication
 import com.adyanf.clone.instagram.di.component.ActivityComponent
@@ -42,13 +41,13 @@ abstract class BaseActivity<VM : BaseViewModel, VB: ViewBinding> : AppCompatActi
             .build()
 
     protected open fun setupObservers() {
-        viewModel.messageString.observe(this, Observer {
+        viewModel.messageString.observe(this) {
             it.data?.run { showMessage(this) }
-        })
+        }
 
-        viewModel.messageStringId.observe(this, Observer {
+        viewModel.messageStringId.observe(this) {
             it.data?.run { showMessage(this) }
-        })
+        }
     }
 
     fun showMessage(message: String) = Toaster.show(applicationContext, message)

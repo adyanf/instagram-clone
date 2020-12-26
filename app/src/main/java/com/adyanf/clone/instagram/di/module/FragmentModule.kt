@@ -2,14 +2,11 @@ package com.adyanf.clone.instagram.di.module
 
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.adyanf.clone.instagram.data.repository.DummyRepository
 import com.adyanf.clone.instagram.data.repository.PhotoRepository
 import com.adyanf.clone.instagram.data.repository.PostRepository
 import com.adyanf.clone.instagram.data.repository.UserRepository
 import com.adyanf.clone.instagram.di.TempDirectory
 import com.adyanf.clone.instagram.ui.base.BaseFragment
-import com.adyanf.clone.instagram.ui.dummies.DummiesAdapter
-import com.adyanf.clone.instagram.ui.dummies.DummiesViewModel
 import com.adyanf.clone.instagram.ui.home.HomeViewModel
 import com.adyanf.clone.instagram.ui.home.post.PostsAdapter
 import com.adyanf.clone.instagram.ui.main.MainSharedViewModel
@@ -41,22 +38,6 @@ class FragmentModule(private val fragment: BaseFragment<*, *>) {
         .setCompression(75)
         .setImageHeight(500)// it will try to achieve this height as close as possible maintaining the aspect ratio;
         .build(fragment)
-
-    @Provides
-    fun provideDummiesViewModel(
-        schedulerProvider: SchedulerProvider,
-        compositeDisposable: CompositeDisposable,
-        networkHelper: NetworkHelper,
-        dummyRepository: DummyRepository
-    ): DummiesViewModel =
-        ViewModelProvider(fragment,
-            ViewModelProviderFactory(DummiesViewModel::class) {
-                DummiesViewModel(schedulerProvider, compositeDisposable, networkHelper, dummyRepository)
-            }
-        ).get(DummiesViewModel::class.java)
-
-    @Provides
-    fun provideDummiesAdapter() = DummiesAdapter(fragment.lifecycle, ArrayList())
 
     @Provides
     fun providePostsAdapter() = PostsAdapter(fragment.lifecycle, ArrayList())

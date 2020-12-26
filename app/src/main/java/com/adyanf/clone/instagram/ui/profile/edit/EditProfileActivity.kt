@@ -27,17 +27,16 @@ class EditProfileActivity : BaseActivity<EditProfileViewModel, ActivityEditProfi
     override fun setupObservers() {
         super.setupObservers()
 
-        viewModel.name.observe(this, {
+        viewModel.name.observe(this) {
             if (binding.etName.text.toString() != it) binding.etName.setText(it)
-        })
-
-        viewModel.bio.observe(this, {
+        }
+        viewModel.bio.observe(this) {
             if (binding.etBio.text.toString() != it) binding.etBio.setText(it)
-        })
-        viewModel.email.observe(this, {
+        }
+        viewModel.email.observe(this) {
             if (binding.etEmail.text.toString() != it) binding.etEmail.setText(it)
-        })
-        viewModel.profilePicUrl.observe(this, {
+        }
+        viewModel.profilePicUrl.observe(this) {
             it?.run {
                 val glideRequest = Glide
                     .with(binding.ivProfile.context)
@@ -56,22 +55,20 @@ class EditProfileActivity : BaseActivity<EditProfileViewModel, ActivityEditProfi
                 }
                 glideRequest.into(binding.ivProfile)
             } ?: binding.ivProfile.setImageResource(R.drawable.ic_profile_add_pic)
-        })
-
-        viewModel.close.observe(this, {
+        }
+        viewModel.close.observe(this) {
             it.getIfNotHandled()?.run {
                 setResult(Activity.RESULT_CANCELED)
                 finish()
             }
-        })
-        viewModel.updated.observe(this, {
+        }
+        viewModel.updated.observe(this) {
             it.getIfNotHandled()?.run {
                 setResult(Activity.RESULT_OK)
                 finish()
             }
-        })
-
-        viewModel.loading.observe(this, {
+        }
+        viewModel.loading.observe(this) {
             it.getIfNotHandled()?.let { isLoading ->
                 if (isLoading) {
                     LoadingDialog.show(getString(R.string.saving_profile), supportFragmentManager)
@@ -79,7 +76,7 @@ class EditProfileActivity : BaseActivity<EditProfileViewModel, ActivityEditProfi
                     LoadingDialog.dismiss()
                 }
             }
-        })
+        }
     }
 
     override fun setupView(savedInstanceState: Bundle?) {

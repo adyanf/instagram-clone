@@ -6,7 +6,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
-import androidx.lifecycle.Observer
 import com.adyanf.clone.instagram.databinding.ActivitySignupBinding
 import com.adyanf.clone.instagram.di.component.ActivityComponent
 import com.adyanf.clone.instagram.ui.base.BaseActivity
@@ -65,57 +64,57 @@ class SignUpActivity : BaseActivity<SignUpViewModel, ActivitySignupBinding>() {
     override fun setupObservers() {
         super.setupObservers()
 
-        viewModel.launchMain.observe(this, Observer {
+        viewModel.launchMain.observe(this) {
             it.getIfNotHandled()?.run {
                 startActivity(Intent(applicationContext, MainActivity::class.java))
                 finish()
             }
-        })
+        }
 
-        viewModel.launchLogin.observe(this, Observer {
+        viewModel.launchLogin.observe(this) {
             it.getIfNotHandled()?.run {
                 startActivity(Intent(applicationContext, LoginActivity::class.java))
                 finish()
             }
-        })
+        }
 
-        viewModel.nameField.observe(this, Observer {
+        viewModel.nameField.observe(this) {
             if (binding.etName.text.toString() != it) binding.etName.setText(it)
-        })
+        }
 
-        viewModel.nameValidation.observe(this, Observer {
+        viewModel.nameValidation.observe(this) {
             when (it.status) {
                 Status.ERROR -> binding.layoutName.error = it.data?.run { getString(this) }
                 else -> binding.layoutName.isErrorEnabled = false
             }
-        })
+        }
 
-        viewModel.emailField.observe(this, Observer {
+        viewModel.emailField.observe(this) {
             if (binding.etEmail.text.toString() != it) binding.etEmail.setText(it)
-        })
+        }
 
-        viewModel.emailValidation.observe(this, Observer {
+        viewModel.emailValidation.observe(this) {
             when (it.status) {
                 Status.ERROR -> binding.layoutEmail.error = it.data?.run { getString(this) }
                 else -> binding.layoutEmail.isErrorEnabled = false
             }
-        })
+        }
 
-        viewModel.passwordField.observe(this, Observer {
+        viewModel.passwordField.observe(this) {
             if (binding.etPassword.text.toString() != it) binding.etPassword.setText(it)
-        })
+        }
 
-        viewModel.passwordValidation.observe(this, Observer {
+        viewModel.passwordValidation.observe(this) {
             when (it.status) {
                 Status.ERROR -> binding.layoutPassword.error = it.data?.run { getString(this) }
                 else -> binding.layoutPassword.isErrorEnabled = false
             }
-        })
+        }
 
-        viewModel.signingUp.observe(this, Observer {
+        viewModel.signingUp.observe(this) {
             binding.pbLoading.visibility = if (it) View.VISIBLE else View.GONE
             binding.btSignup.isEnabled = !it
             binding.btLogin.isEnabled = !it
-        })
+        }
     }
 }

@@ -7,7 +7,6 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.adyanf.clone.instagram.InstagramApplication
@@ -78,13 +77,13 @@ abstract class BaseItemViewHolder<T : Any, VM : BaseItemViewModel<T>, VB: ViewBi
     fun showMessage(@StringRes resId: Int) = showMessage(itemView.context.getString(resId))
 
     protected open fun setupObservers() {
-        viewModel.messageString.observe(this, Observer {
+        viewModel.messageString.observe(this) {
             it.data?.run { showMessage(this) }
-        })
+        }
 
-        viewModel.messageStringId.observe(this, Observer {
+        viewModel.messageStringId.observe(this) {
             it.data?.run { showMessage(this) }
-        })
+        }
     }
 
     protected abstract fun injectDependencies(viewHolderComponent: ViewHolderComponent)

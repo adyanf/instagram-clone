@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.viewbinding.ViewBinding
 import com.adyanf.clone.instagram.InstagramApplication
 import com.adyanf.clone.instagram.di.component.DaggerFragmentComponent
@@ -14,6 +13,7 @@ import com.adyanf.clone.instagram.di.component.FragmentComponent
 import com.adyanf.clone.instagram.di.module.FragmentModule
 import com.adyanf.clone.instagram.utils.display.Toaster
 import javax.inject.Inject
+
 /**
  * Reference for generics: https://kotlinlang.org/docs/reference/generics.html
  * Basically BaseFragment will take any class that extends BaseViewModel
@@ -53,13 +53,13 @@ abstract class BaseFragment<VM : BaseViewModel, VB: ViewBinding> : Fragment() {
     }
 
     protected open fun setupObservers() {
-        viewModel.messageString.observe(this, Observer {
+        viewModel.messageString.observe(this) {
             it.data?.run { showMessage(this) }
-        })
+        }
 
-        viewModel.messageStringId.observe(this, Observer {
+        viewModel.messageStringId.observe(this) {
             it.data?.run { showMessage(this) }
-        })
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
