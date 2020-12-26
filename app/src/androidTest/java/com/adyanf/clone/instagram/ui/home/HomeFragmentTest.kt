@@ -13,7 +13,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.adyanf.clone.instagram.R
 import com.adyanf.clone.instagram.TestComponentRule
 import com.adyanf.clone.instagram.data.model.User
-import com.adyanf.clone.instagram.utils.network.RecyclerViewMatcher.atPositionOnView
+import com.adyanf.clone.instagram.utils.RecyclerViewMatcher.atPositionOnView
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

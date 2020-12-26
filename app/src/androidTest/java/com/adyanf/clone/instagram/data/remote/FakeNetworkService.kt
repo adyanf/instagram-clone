@@ -20,7 +20,18 @@ import java.util.Date
 class FakeNetworkService : NetworkService {
 
     override fun doLoginCall(request: LoginRequest, apiKey: String): Single<LoginResponse> {
-        TODO("Not yet implemented")
+        return Single.just(
+            LoginResponse(
+                "statusCode",
+                200,
+                "success",
+                "accessToken",
+                "userId",
+                "userName",
+                "userEmail",
+                "profilePicUrl"
+            )
+        )
     }
 
     override fun doSignUpCall(request: SignUpRequest, apiKey: String): Single<SignUpResponse> {

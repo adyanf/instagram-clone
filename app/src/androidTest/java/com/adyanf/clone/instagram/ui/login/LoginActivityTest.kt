@@ -1,9 +1,11 @@
 package com.adyanf.clone.instagram.ui.login
 
-import android.content.Intent
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
+import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
@@ -18,22 +20,41 @@ class LoginActivityTest {
 
     private val component = TestComponentRule(InstrumentationRegistry.getInstrumentation().targetContext)
 
-    private val main = IntentsTestRule(LoginActivity::class.java, false, false)
-
     @get:Rule
-    val chain = RuleChain.outerRule(component).around(main)
+    val chain = RuleChain.outerRule(component)
 
     @Before
     fun setup() {
-
+        launch(LoginActivity::class.java)
     }
 
     @Test
     fun testCheckViewsDisplay() {
-        main.launchActivity(Intent(component.getContext(), LoginActivity::class.java))
-
+        // then
         onView(withId(R.id.et_email)).check(matches(isDisplayed()))
         onView(withId(R.id.et_password)).check(matches(isDisplayed()))
         onView(withId(R.id.bt_login)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun givenValidEmailAndValidPwd_whenLogin_shouldOpenMainActivity() {
+        // when
+        val emailFieldMatcher = withId(R.id.et_email)
+        val pwdFieldMatcher = withId(R.id.et_password)
+        val loginButtonMatcher = withId(R.id.bt_login)
+
+        onView(emailFieldMatcher).perform(
+            typeText("test@mindorks.com"),
+            closeSoftKeyboard()
+        )
+        onView(pwdFieldMatcher).perform(
+            typeText("test123"),
+            closeSoftKeyboard()
+        )
+        onView(loginButtonMatcher).perform(click())
+
+        // then
+        val bottomNavigationMatcher = withId(R.id.bottom_navigation)
+        onView(bottomNavigationMatcher).check(matches(isDisplayed()))
     }
 }

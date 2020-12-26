@@ -1,4 +1,4 @@
-package com.adyanf.clone.instagram.utils.network
+package com.adyanf.clone.instagram.utils
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
