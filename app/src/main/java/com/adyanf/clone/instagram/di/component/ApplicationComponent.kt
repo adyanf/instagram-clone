@@ -7,11 +7,13 @@ import com.adyanf.clone.instagram.InstagramApplication
 import com.adyanf.clone.instagram.data.local.db.DatabaseService
 import com.adyanf.clone.instagram.data.remote.NetworkService
 import com.adyanf.clone.instagram.data.repository.UserRepository
+import com.adyanf.clone.instagram.di.TempDirectory
 import com.adyanf.clone.instagram.di.module.ApplicationModule
 import com.adyanf.clone.instagram.utils.network.NetworkHelper
 import com.adyanf.clone.instagram.utils.rx.SchedulerProvider
 import dagger.Component
 import io.reactivex.disposables.CompositeDisposable
+import java.io.File
 import javax.inject.Singleton
 
 @Singleton
@@ -23,6 +25,9 @@ interface ApplicationComponent {
     fun getApplication(): Application
 
     fun getContext(): Context
+
+    @TempDirectory
+    fun getTempDirectory(): File
 
     /**
      * These methods are written in ApplicationComponent because the instance of

@@ -3,7 +3,6 @@ package com.adyanf.clone.instagram.ui.main
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import com.adyanf.clone.instagram.R
 import com.adyanf.clone.instagram.databinding.ActivityMainBinding
 import com.adyanf.clone.instagram.di.component.ActivityComponent
@@ -11,10 +10,14 @@ import com.adyanf.clone.instagram.ui.base.BaseActivity
 import com.adyanf.clone.instagram.ui.home.HomeFragment
 import com.adyanf.clone.instagram.ui.photo.PhotoFragment
 import com.adyanf.clone.instagram.ui.profile.ProfileFragment
+import javax.inject.Inject
 
 class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
 
     private var activeFragment: Fragment? = null
+
+    @Inject
+    lateinit var mainSharedViewModel: MainSharedViewModel
 
     override fun provideViewBinding(layoutInflater: LayoutInflater): ActivityMainBinding =
         ActivityMainBinding.inflate(layoutInflater)
@@ -49,17 +52,21 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
     override fun setupObservers() {
         super.setupObservers()
 
-        viewModel.homeNavigation.observe(this, Observer {
+        viewModel.homeNavigation.observe(this) {
             it.getIfNotHandled()?.run { showHome() }
-        })
+        }
 
-        viewModel.photoNavigation.observe(this, Observer {
+        viewModel.photoNavigation.observe(this) {
             it.getIfNotHandled()?.run { showPhoto() }
-        })
+        }
 
-        viewModel.profileNavigation.observe(this, Observer {
+        viewModel.profileNavigation.observe(this) {
             it.getIfNotHandled()?.run { showProfile() }
-        })
+        }
+
+        mainSharedViewModel.homeRedirection.observe(this) {
+            it.getIfNotHandled()?.run { binding.bottomNavigation.selectedItemId = R.id.item_home }
+        }
     }
 
     private fun showHome() {

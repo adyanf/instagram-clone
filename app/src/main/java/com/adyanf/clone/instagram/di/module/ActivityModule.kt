@@ -2,11 +2,11 @@ package com.adyanf.clone.instagram.di.module
 
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.adyanf.clone.instagram.data.repository.DummyRepository
 import com.adyanf.clone.instagram.data.repository.UserRepository
 import com.adyanf.clone.instagram.ui.base.BaseActivity
 import com.adyanf.clone.instagram.ui.dummy.DummyViewModel
 import com.adyanf.clone.instagram.ui.login.LoginViewModel
+import com.adyanf.clone.instagram.ui.main.MainSharedViewModel
 import com.adyanf.clone.instagram.ui.main.MainViewModel
 import com.adyanf.clone.instagram.ui.profile.edit.EditProfileViewModel
 import com.adyanf.clone.instagram.ui.signup.SignUpViewModel
@@ -45,11 +45,10 @@ class ActivityModule(private val activity: BaseActivity<*, *>) {
     fun provideDummyViewModel(
         schedulerProvider: SchedulerProvider,
         compositeDisposable: CompositeDisposable,
-        networkHelper: NetworkHelper,
-        dummyRepository: DummyRepository
+        networkHelper: NetworkHelper
     ): DummyViewModel = ViewModelProvider(
         activity, ViewModelProviderFactory(DummyViewModel::class) {
-            DummyViewModel(schedulerProvider, compositeDisposable, networkHelper, dummyRepository)
+            DummyViewModel(schedulerProvider, compositeDisposable, networkHelper)
         }).get(DummyViewModel::class.java)
 
     @Provides
@@ -94,4 +93,14 @@ class ActivityModule(private val activity: BaseActivity<*, *>) {
         activity, ViewModelProviderFactory(EditProfileViewModel::class) {
             EditProfileViewModel(schedulerProvider, compositeDisposable, networkHelper, userRepository)
         }).get(EditProfileViewModel::class.java)
+
+    @Provides
+    fun provideMainSharedViewModel(
+        schedulerProvider: SchedulerProvider,
+        compositeDisposable: CompositeDisposable,
+        networkHelper: NetworkHelper
+    ): MainSharedViewModel = ViewModelProvider(
+        activity, ViewModelProviderFactory(MainSharedViewModel::class) {
+            MainSharedViewModel(schedulerProvider, compositeDisposable, networkHelper)
+        }).get(MainSharedViewModel::class.java)
 }

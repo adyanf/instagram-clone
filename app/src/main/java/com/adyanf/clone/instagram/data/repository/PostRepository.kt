@@ -1,17 +1,15 @@
 package com.adyanf.clone.instagram.data.repository
 
-import com.adyanf.clone.instagram.data.local.db.DatabaseService
 import com.adyanf.clone.instagram.data.model.Post
 import com.adyanf.clone.instagram.data.model.User
 import com.adyanf.clone.instagram.data.remote.NetworkService
+import com.adyanf.clone.instagram.data.remote.request.PostCreationRequest
 import com.adyanf.clone.instagram.data.remote.request.PostLikeModifyRequest
 import io.reactivex.Single
 import javax.inject.Inject
 
-class PostRepository @Inject constructor(
-    private val networkService: NetworkService,
-    private val databaseService: DatabaseService
-) {
+class PostRepository @Inject constructor(private val networkService: NetworkService) {
+
     fun fetchHomePostList(user: User, firstPostId: String?, lastPostId: String?): Single<List<Post>> {
         return networkService.doHomePostsListCall(
             firstPostId,
@@ -59,4 +57,24 @@ class PostRepository @Inject constructor(
             return@map post
         }
     }
+
+    fun createPost(imgUrl: String, imgWidth: Int, imgHeight: Int, user: User): Single<Post> =
+        networkService.doCreatePostCall(
+            PostCreationRequest(imgUrl, imgWidth, imgHeight), user.id, user.accessToken
+        ).map {
+            Post(
+                it.data.id,
+                it.data.imageUrl,
+                it.data.imageWidth,
+                it.data.imageHeight,
+                Post.User(
+                    user.id,
+                    user.name,
+                    user.profilePicUrl
+                ),
+                mutableListOf(),
+                it.data.createdAt
+            )
+        }
+
 }

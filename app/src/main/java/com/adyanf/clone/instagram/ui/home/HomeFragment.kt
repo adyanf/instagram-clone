@@ -11,9 +11,13 @@ import com.adyanf.clone.instagram.databinding.FragmentHomeBinding
 import com.adyanf.clone.instagram.di.component.FragmentComponent
 import com.adyanf.clone.instagram.ui.base.BaseFragment
 import com.adyanf.clone.instagram.ui.home.post.PostsAdapter
+import com.adyanf.clone.instagram.ui.main.MainSharedViewModel
 import javax.inject.Inject
 
 class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
+
+    @Inject
+    lateinit var mainSharedViewModel: MainSharedViewModel
 
     @Inject
     lateinit var linearLayoutManager: LinearLayoutManager
@@ -40,6 +44,19 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
         viewModel.loading.observe(this, Observer {
             binding.progressBar.isEnabled = it
             binding.progressBar.visibility = if (it) View.VISIBLE else View.GONE
+        })
+
+        viewModel.refreshPosts.observe(this, {
+            it.data?.run {
+                postsAdapter.updateList(this)
+                binding.rvPosts.scrollToPosition(0)
+            }
+        })
+
+        mainSharedViewModel.newPost.observe(this, {
+            it.getIfNotHandled()?.run {
+                viewModel.onNewPost(this)
+            }
         })
     }
 

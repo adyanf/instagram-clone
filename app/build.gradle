@@ -94,6 +94,9 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxjava:$rootProject.rxjava_version"
     implementation "io.reactivex.rxjava2:rxandroid:$rootProject.rxandroid_version"
 
+    // camera
+    implementation "com.mindorks:paracamera:$paracamera_version"
+
     // logger
     implementation "com.jakewharton.timber:timber:$timber_version"
 
