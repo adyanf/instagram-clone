@@ -39,7 +39,7 @@ class LoginViewModelTest {
     private lateinit var loggingInObserver: Observer<Boolean>
 
     @Mock
-    private lateinit var launchDummyObserver: Observer<Event<Map<String, String>>>
+    private lateinit var launchMainObserver: Observer<Event<Map<String, String>>>
 
     @Mock
     private lateinit var messageStringIdObserver: Observer<Resource<Int>>
@@ -60,14 +60,14 @@ class LoginViewModelTest {
             userRepository
         )
         loginViewModel.loggingIn.observeForever(loggingInObserver)
-        loginViewModel.launchDummy.observeForever(launchDummyObserver)
+        loginViewModel.launchMain.observeForever(launchMainObserver)
         loginViewModel.messageStringId.observeForever(messageStringIdObserver)
     }
 
     @After
     fun teardown() {
         loginViewModel.loggingIn.removeObserver(loggingInObserver)
-        loginViewModel.launchDummy.removeObserver(launchDummyObserver)
+        loginViewModel.launchMain.removeObserver(launchMainObserver)
         loginViewModel.messageStringId.removeObserver(messageStringIdObserver)
     }
 
@@ -91,10 +91,10 @@ class LoginViewModelTest {
 
         verify(userRepository).saveCurrentUser(user)
         assert(loginViewModel.loggingIn.value == false)
-        assert(loginViewModel.launchDummy.value == Event(hashMapOf<String, String>()))
+        assert(loginViewModel.launchMain.value == Event(hashMapOf<String, String>()))
         verify(loggingInObserver).onChanged(true)
         verify(loggingInObserver).onChanged(false)
-        verify(launchDummyObserver).onChanged(Event(hashMapOf()))
+        verify(launchMainObserver).onChanged(Event(hashMapOf()))
     }
 
     @Test

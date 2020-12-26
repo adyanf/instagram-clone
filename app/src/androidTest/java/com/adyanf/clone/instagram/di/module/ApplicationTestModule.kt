@@ -9,12 +9,14 @@ import com.adyanf.clone.instagram.InstagramApplication
 import com.adyanf.clone.instagram.data.local.db.DatabaseService
 import com.adyanf.clone.instagram.data.remote.NetworkService
 import com.adyanf.clone.instagram.data.remote.Networking
+import com.adyanf.clone.instagram.utils.common.FileUtils
 import com.adyanf.clone.instagram.utils.network.NetworkHelper
 import com.adyanf.clone.instagram.utils.rx.RxSchedulerProvider
 import com.adyanf.clone.instagram.utils.rx.SchedulerProvider
 import dagger.Module
 import dagger.Provides
 import io.reactivex.disposables.CompositeDisposable
+import java.io.File
 import javax.inject.Singleton
 
 @Module
@@ -27,6 +29,10 @@ class ApplicationTestModule(private val application: InstagramApplication) {
     @Provides
     @Singleton
     fun provideContext(): Context = application
+
+    @Provides
+    @Singleton
+    fun provideTempDirectory(): File = FileUtils.getDirectory(application, "temp")
 
     @Provides
     fun provideCompositeDisposable(): CompositeDisposable = CompositeDisposable()
