@@ -7,9 +7,9 @@ import com.adyanf.clone.instagram.data.remote.NetworkService
 import com.adyanf.clone.instagram.data.remote.request.LoginRequest
 import com.adyanf.clone.instagram.data.remote.request.SignUpRequest
 import com.adyanf.clone.instagram.data.remote.request.UpdateMyInfoRequest
-import io.reactivex.Single
 import javax.inject.Inject
 import javax.inject.Singleton
+
 @Singleton
 class UserRepository @Inject constructor(
     private val networkService: NetworkService,
@@ -47,42 +47,34 @@ class UserRepository @Inject constructor(
             null
     }
 
-    fun doUserLogin(email: String, password: String): Single<User> =
-        networkService.doLoginCall(LoginRequest(email, password))
-            .map {
-                User(
-                    it.userId,
-                    it.userName,
-                    it.userEmail,
-                    it.accessToken,
-                    it.profilePicUrl
-                )
-            }
+    suspend fun doUserLogin(email: String, password: String): User {
+        val response = networkService.doLoginCall(LoginRequest(email, password))
+        return response.run {
+            User(userId, userName, userEmail, accessToken, profilePicUrl)
+        }
+    }
 
-    fun doUserSignUp(name: String, email: String, password: String): Single<User> =
-        networkService.doSignUpCall(SignUpRequest(name, email, password))
-            .map {
-                User(
-                    it.userId,
-                    it.userName,
-                    it.userEmail,
-                    it.accessToken,
-                    it.profilePicUrl
-                )
-            }
+    suspend fun doUserSignUp(name: String, email: String, password: String): User {
+        val response = networkService.doSignUpCall(SignUpRequest(name, email, password))
+        return response.run {
+            User(userId, userName, userEmail, accessToken, profilePicUrl)
+        }
+    }
 
-    fun doUserLogout(user: User): Single<Any> =
-        networkService.doLogoutCall(user.id, user.accessToken)
-            .map { it.message }
+    suspend fun doUserLogout(user: User): Any {
+        val response = networkService.doLogoutCall(user.id, user.accessToken)
+        return response.message
+    }
 
-    fun doFetchInfo(user: User): Single<MyInfo> =
-        networkService.doFetchMyInfoCall(user.id, user.accessToken)
-            .map { it.data }
+    suspend fun doFetchInfo(user: User): MyInfo {
+        val response = networkService.doFetchMyInfoCall(user.id, user.accessToken)
+        return response.data
+    }
 
-    fun doUpdateInfo(user: User, myInfo: MyInfo): Single<Any> {
+    suspend fun doUpdateInfo(user: User, myInfo: MyInfo): Any {
         val request = UpdateMyInfoRequest(myInfo.name, myInfo.profilePicUrl, myInfo.tagline)
-        return networkService.doUpdateMyInfoCall(request, user.id, user.accessToken)
-            .map { it.message }
+        val response = networkService.doUpdateMyInfoCall(request, user.id, user.accessToken)
+        return response.message
     }
 }
 

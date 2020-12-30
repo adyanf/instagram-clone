@@ -37,7 +37,7 @@ abstract class BaseFragment<VM : BaseViewModel, VB: ViewBinding> : Fragment() {
     private fun buildFragmentComponent() =
         DaggerFragmentComponent
             .builder()
-            .applicationComponent((context!!.applicationContext as InstagramApplication).applicationComponent)
+            .applicationComponent((requireContext().applicationContext as InstagramApplication).applicationComponent)
             .fragmentModule(FragmentModule(this))
             .build()
 

@@ -12,10 +12,8 @@ import com.adyanf.clone.instagram.ui.signup.SignUpViewModel
 import com.adyanf.clone.instagram.ui.splash.SplashViewModel
 import com.adyanf.clone.instagram.utils.ViewModelProviderFactory
 import com.adyanf.clone.instagram.utils.network.NetworkHelper
-import com.adyanf.clone.instagram.utils.rx.SchedulerProvider
 import dagger.Module
 import dagger.Provides
-import io.reactivex.disposables.CompositeDisposable
 
 /**
  * Kotlin Generics Reference: https://kotlinlang.org/docs/reference/generics.html
@@ -30,66 +28,54 @@ class ActivityModule(private val activity: BaseActivity<*, *>) {
 
     @Provides
     fun provideSplashViewModel(
-        schedulerProvider: SchedulerProvider,
-        compositeDisposable: CompositeDisposable,
         networkHelper: NetworkHelper,
         userRepository: UserRepository
     ): SplashViewModel = ViewModelProvider(
         activity, ViewModelProviderFactory(SplashViewModel::class) {
-            SplashViewModel(schedulerProvider, compositeDisposable, networkHelper, userRepository)
+            SplashViewModel(networkHelper, userRepository)
             //this lambda creates and return SplashViewModel
         }).get(SplashViewModel::class.java)
 
     @Provides
     fun provideLoginViewModel(
-        schedulerProvider: SchedulerProvider,
-        compositeDisposable: CompositeDisposable,
         networkHelper: NetworkHelper,
         userRepository: UserRepository
     ): LoginViewModel = ViewModelProvider(
         activity, ViewModelProviderFactory(LoginViewModel::class) {
-            LoginViewModel(schedulerProvider, compositeDisposable, networkHelper, userRepository)
+            LoginViewModel(networkHelper, userRepository)
         }).get(LoginViewModel::class.java)
 
     @Provides
     fun provideSignUpViewModel(
-        schedulerProvider: SchedulerProvider,
-        compositeDisposable: CompositeDisposable,
         networkHelper: NetworkHelper,
         userRepository: UserRepository
     ): SignUpViewModel = ViewModelProvider(
         activity, ViewModelProviderFactory(SignUpViewModel::class) {
-            SignUpViewModel(schedulerProvider, compositeDisposable, networkHelper, userRepository)
+            SignUpViewModel(networkHelper, userRepository)
         }).get(SignUpViewModel::class.java)
 
     @Provides
     fun provideMainViewModel(
-        schedulerProvider: SchedulerProvider,
-        compositeDisposable: CompositeDisposable,
         networkHelper: NetworkHelper
     ): MainViewModel = ViewModelProvider(
         activity, ViewModelProviderFactory(MainViewModel::class) {
-            MainViewModel(schedulerProvider, compositeDisposable, networkHelper)
+            MainViewModel(networkHelper)
         }).get(MainViewModel::class.java)
 
     @Provides
     fun provideEditProfileViewModel(
-        schedulerProvider: SchedulerProvider,
-        compositeDisposable: CompositeDisposable,
         networkHelper: NetworkHelper,
         userRepository: UserRepository
     ): EditProfileViewModel = ViewModelProvider(
         activity, ViewModelProviderFactory(EditProfileViewModel::class) {
-            EditProfileViewModel(schedulerProvider, compositeDisposable, networkHelper, userRepository)
+            EditProfileViewModel(networkHelper, userRepository)
         }).get(EditProfileViewModel::class.java)
 
     @Provides
     fun provideMainSharedViewModel(
-        schedulerProvider: SchedulerProvider,
-        compositeDisposable: CompositeDisposable,
         networkHelper: NetworkHelper
     ): MainSharedViewModel = ViewModelProvider(
         activity, ViewModelProviderFactory(MainSharedViewModel::class) {
-            MainSharedViewModel(schedulerProvider, compositeDisposable, networkHelper)
+            MainSharedViewModel(networkHelper)
         }).get(MainSharedViewModel::class.java)
 }

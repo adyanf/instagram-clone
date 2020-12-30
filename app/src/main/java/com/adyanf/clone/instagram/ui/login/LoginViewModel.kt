@@ -3,6 +3,7 @@ package com.adyanf.clone.instagram.ui.login
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.viewModelScope
 import com.adyanf.clone.instagram.data.repository.UserRepository
 import com.adyanf.clone.instagram.ui.base.BaseViewModel
 import com.adyanf.clone.instagram.utils.common.Event
@@ -11,15 +12,12 @@ import com.adyanf.clone.instagram.utils.common.Status
 import com.adyanf.clone.instagram.utils.common.Validation
 import com.adyanf.clone.instagram.utils.common.Validator
 import com.adyanf.clone.instagram.utils.network.NetworkHelper
-import com.adyanf.clone.instagram.utils.rx.SchedulerProvider
-import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.launch
 
 class LoginViewModel(
-    schedulerProvider: SchedulerProvider,
-    compositeDisposable: CompositeDisposable,
     networkHelper: NetworkHelper,
     private val userRepository: UserRepository
-) : BaseViewModel(schedulerProvider, compositeDisposable, networkHelper) {
+) : BaseViewModel(networkHelper) {
 
     val emailField: MutableLiveData<String> = MutableLiveData()
     val passwordField: MutableLiveData<String> = MutableLiveData()
@@ -49,22 +47,22 @@ class LoginViewModel(
         if (validations.isNotEmpty() && email != null && password != null) {
             val successValidations = validations.filter { it.resource.status == Status.SUCCESS }
             if (successValidations.size == validations.size && checkInternetConnectionWithMessage()) {
-                loggingIn.postValue(true)
-                compositeDisposable.addAll(
-                    userRepository.doUserLogin(email, password)
-                        .subscribeOn(schedulerProvider.io())
-                        .subscribe(
-                            {
-                                userRepository.saveCurrentUser(it)
-                                loggingIn.postValue(false)
-                                launchMain.postValue(Event(emptyMap()))
-                            },
-                            {
-                                handleNetworkError(it)
-                                loggingIn.postValue(false)
-                            }
-                        )
-                )
+                doLogin(email, password)
+            }
+        }
+    }
+
+    private fun doLogin(email: String, password: String) {
+        viewModelScope.launch {
+            loggingIn.postValue(true)
+            try {
+                val loggedInUser = userRepository.doUserLogin(email, password)
+                userRepository.saveCurrentUser(loggedInUser)
+                loggingIn.postValue(false)
+                launchMain.postValue(Event(emptyMap()))
+            } catch (e: Exception) {
+                loggingIn.postValue(false)
+                handleNetworkError(e.cause)
             }
         }
     }

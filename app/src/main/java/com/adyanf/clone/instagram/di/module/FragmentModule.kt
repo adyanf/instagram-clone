@@ -14,12 +14,9 @@ import com.adyanf.clone.instagram.ui.photo.PhotoViewModel
 import com.adyanf.clone.instagram.ui.profile.ProfileViewModel
 import com.adyanf.clone.instagram.utils.ViewModelProviderFactory
 import com.adyanf.clone.instagram.utils.network.NetworkHelper
-import com.adyanf.clone.instagram.utils.rx.SchedulerProvider
 import com.mindorks.paracamera.Camera
 import dagger.Module
 import dagger.Provides
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.processors.PublishProcessor
 import java.io.File
 
 @Module
@@ -44,8 +41,6 @@ class FragmentModule(private val fragment: BaseFragment<*, *>) {
 
     @Provides
     fun provideHomeViewModel(
-        schedulerProvider: SchedulerProvider,
-        compositeDisposable: CompositeDisposable,
         networkHelper: NetworkHelper,
         userRepository: UserRepository,
         postRepository: PostRepository
@@ -53,21 +48,16 @@ class FragmentModule(private val fragment: BaseFragment<*, *>) {
         ViewModelProvider(fragment,
             ViewModelProviderFactory(HomeViewModel::class) {
                 HomeViewModel(
-                    schedulerProvider,
-                    compositeDisposable,
                     networkHelper,
                     userRepository,
                     postRepository,
-                    ArrayList(),
-                    PublishProcessor.create()
+                    ArrayList()
                 )
             }
         ).get(HomeViewModel::class.java)
 
     @Provides
     fun providePhotoViewModel(
-        schedulerProvider: SchedulerProvider,
-        compositeDisposable: CompositeDisposable,
         networkHelper: NetworkHelper,
         userRepository: UserRepository,
         photoRepository: PhotoRepository,
@@ -76,34 +66,27 @@ class FragmentModule(private val fragment: BaseFragment<*, *>) {
     ): PhotoViewModel =
         ViewModelProvider(fragment,
             ViewModelProviderFactory(PhotoViewModel::class) {
-                PhotoViewModel(
-                    schedulerProvider, compositeDisposable, networkHelper,
-                    userRepository, photoRepository, postRepository, directory
-                )
+                PhotoViewModel(networkHelper, userRepository, photoRepository, postRepository, directory)
             }
         ).get(PhotoViewModel::class.java)
 
     @Provides
     fun provideProfileViewModel(
-        schedulerProvider: SchedulerProvider,
-        compositeDisposable: CompositeDisposable,
         networkHelper: NetworkHelper,
         userRepository: UserRepository,
         postRepository: PostRepository
     ): ProfileViewModel =
         ViewModelProvider(fragment,
             ViewModelProviderFactory(ProfileViewModel::class) {
-                ProfileViewModel(schedulerProvider, compositeDisposable, networkHelper, userRepository, postRepository)
+                ProfileViewModel(networkHelper, userRepository, postRepository)
             }
         ).get(ProfileViewModel::class.java)
 
     @Provides
     fun provideMainSharedViewModel(
-        schedulerProvider: SchedulerProvider,
-        compositeDisposable: CompositeDisposable,
         networkHelper: NetworkHelper
     ): MainSharedViewModel = ViewModelProvider(
         fragment.activity!!, ViewModelProviderFactory(MainSharedViewModel::class) {
-            MainSharedViewModel(schedulerProvider, compositeDisposable, networkHelper)
+            MainSharedViewModel(networkHelper)
         }).get(MainSharedViewModel::class.java)
 }

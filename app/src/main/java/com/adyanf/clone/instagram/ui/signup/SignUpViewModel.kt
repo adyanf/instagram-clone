@@ -3,19 +3,22 @@ package com.adyanf.clone.instagram.ui.signup
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.viewModelScope
 import com.adyanf.clone.instagram.data.repository.UserRepository
 import com.adyanf.clone.instagram.ui.base.BaseViewModel
-import com.adyanf.clone.instagram.utils.common.*
+import com.adyanf.clone.instagram.utils.common.Event
+import com.adyanf.clone.instagram.utils.common.Resource
+import com.adyanf.clone.instagram.utils.common.Status
+import com.adyanf.clone.instagram.utils.common.Validation
+import com.adyanf.clone.instagram.utils.common.Validator
 import com.adyanf.clone.instagram.utils.network.NetworkHelper
-import com.adyanf.clone.instagram.utils.rx.SchedulerProvider
-import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.launch
+import java.lang.Exception
 
 class SignUpViewModel(
-    schedulerProvider: SchedulerProvider,
-    compositeDisposable: CompositeDisposable,
     networkHelper: NetworkHelper,
     private val userRepository: UserRepository
-) : BaseViewModel(schedulerProvider, compositeDisposable, networkHelper) {
+) : BaseViewModel(networkHelper) {
 
     val nameField: MutableLiveData<String> = MutableLiveData()
     val emailField: MutableLiveData<String> = MutableLiveData()
@@ -50,22 +53,22 @@ class SignUpViewModel(
         if (validations.isNotEmpty() && name != null && email != null && password != null) {
             val successValidations = validations.filter { it.resource.status == Status.SUCCESS }
             if (successValidations.size == validations.size && checkInternetConnectionWithMessage()) {
-                signingUp.postValue(true)
-                compositeDisposable.addAll(
-                    userRepository.doUserSignUp(name, email, password)
-                        .subscribeOn(schedulerProvider.io())
-                        .subscribe(
-                            {
-                                userRepository.saveCurrentUser(it)
-                                signingUp.postValue(false)
-                                launchMain.postValue(Event(emptyMap()))
-                            },
-                            {
-                                handleNetworkError(it)
-                                signingUp.postValue(false)
-                            }
-                        )
-                )
+                doSignUp(name, email, password)
+            }
+        }
+    }
+
+    private fun doSignUp(name: String, email: String, password: String) {
+        viewModelScope.launch {
+            signingUp.postValue(true)
+            try {
+                val signedUser = userRepository.doUserSignUp(name, email, password)
+                userRepository.saveCurrentUser(signedUser)
+                signingUp.postValue(false)
+                launchMain.postValue(Event(emptyMap()))
+            } catch (e: Exception) {
+                signingUp.postValue(false)
+                handleNetworkError(e.cause)
             }
         }
     }

@@ -3,6 +3,7 @@ package com.adyanf.clone.instagram.ui.profile.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.viewModelScope
 import com.adyanf.clone.instagram.data.model.Image
 import com.adyanf.clone.instagram.data.model.MyInfo
 import com.adyanf.clone.instagram.data.remote.Networking
@@ -10,15 +11,12 @@ import com.adyanf.clone.instagram.data.repository.UserRepository
 import com.adyanf.clone.instagram.ui.base.BaseViewModel
 import com.adyanf.clone.instagram.utils.common.Event
 import com.adyanf.clone.instagram.utils.network.NetworkHelper
-import com.adyanf.clone.instagram.utils.rx.SchedulerProvider
-import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.launch
 
 class EditProfileViewModel(
-    schedulerProvider: SchedulerProvider,
-    compositeDisposable: CompositeDisposable,
     networkHelper: NetworkHelper,
     private val userRepository: UserRepository
-) : BaseViewModel(schedulerProvider, compositeDisposable, networkHelper) {
+) : BaseViewModel(networkHelper) {
 
     private val user = userRepository.getCurrentUser()!!
     private val headers = mapOf(
@@ -39,18 +37,14 @@ class EditProfileViewModel(
 
     override fun onCreate() {
         email.postValue(user.email)
-        compositeDisposable.add(
-            userRepository.doFetchInfo(user)
-                .subscribeOn(schedulerProvider.io())
-                .subscribe(
-                    {
-                        myInfo.postValue(it)
-                    },
-                    {
-                        handleNetworkError(it)
-                    }
-                )
-        )
+        viewModelScope.launch {
+            try {
+                val info = userRepository.doFetchInfo(user)
+                myInfo.postValue(info)
+            } catch (e: Exception) {
+                handleNetworkError(e.cause)
+            }
+        }
     }
 
     fun onNameChange(newName: String) {
@@ -79,22 +73,18 @@ class EditProfileViewModel(
 
     fun onSaveClick() {
         myInfo.value?.let { newMyInfo ->
-            loading.postValue(Event(true))
-            compositeDisposable.add(
-                userRepository.doUpdateInfo(user, newMyInfo)
-                    .subscribeOn(schedulerProvider.io())
-                    .subscribe(
-                        {
-                            loading.postValue(Event(false))
-                            userRepository.updateUserName(newMyInfo.name)
-                            updated.postValue(Event(true))
-                        },
-                        {
-                            loading.postValue(Event(false))
-                            handleNetworkError(it)
-                        }
-                    )
-            )
+            viewModelScope.launch {
+                loading.postValue(Event(true))
+                try {
+                    userRepository.doUpdateInfo(user, newMyInfo)
+                    loading.postValue(Event(false))
+                    userRepository.updateUserName(newMyInfo.name)
+                    updated.postValue(Event(true))
+                } catch (e: Exception) {
+                    loading.postValue(Event(false))
+                    handleNetworkError(e.cause)
+                }
+            }
         }
     }
 

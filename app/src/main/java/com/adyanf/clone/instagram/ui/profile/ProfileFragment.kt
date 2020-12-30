@@ -7,7 +7,6 @@ import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import com.adyanf.clone.instagram.R
 import com.adyanf.clone.instagram.databinding.FragmentProfileBinding
 import com.adyanf.clone.instagram.di.component.FragmentComponent

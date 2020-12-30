@@ -10,9 +10,7 @@ import com.adyanf.clone.instagram.data.repository.UserRepository
 import com.adyanf.clone.instagram.di.TempDirectory
 import com.adyanf.clone.instagram.di.module.ApplicationModule
 import com.adyanf.clone.instagram.utils.network.NetworkHelper
-import com.adyanf.clone.instagram.utils.rx.SchedulerProvider
 import dagger.Component
-import io.reactivex.disposables.CompositeDisposable
 import java.io.File
 import javax.inject.Singleton
 
@@ -56,8 +54,4 @@ interface ApplicationComponent {
      *---------------------------------------------------------------------------------
      */
     fun getUserRepository(): UserRepository
-
-    fun getSchedulerProvider(): SchedulerProvider
-
-    fun getCompositeDisposable(): CompositeDisposable
 }

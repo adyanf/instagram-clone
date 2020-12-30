@@ -5,14 +5,10 @@ import com.adyanf.clone.instagram.data.model.Post
 import com.adyanf.clone.instagram.ui.base.BaseViewModel
 import com.adyanf.clone.instagram.utils.common.Event
 import com.adyanf.clone.instagram.utils.network.NetworkHelper
-import com.adyanf.clone.instagram.utils.rx.SchedulerProvider
-import io.reactivex.disposables.CompositeDisposable
 
 class MainSharedViewModel(
-    schedulerProvider: SchedulerProvider,
-    compositeDisposable: CompositeDisposable,
     networkHelper: NetworkHelper
-): BaseViewModel(schedulerProvider, compositeDisposable, networkHelper) {
+): BaseViewModel(networkHelper) {
 
     val homeRedirection: MutableLiveData<Event<Boolean>> = MutableLiveData()
 

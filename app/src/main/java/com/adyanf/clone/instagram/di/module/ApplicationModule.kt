@@ -13,11 +13,8 @@ import com.adyanf.clone.instagram.di.TempDirectory
 import com.adyanf.clone.instagram.utils.common.FileUtils
 import com.adyanf.clone.instagram.utils.network.NetworkHelper
 import com.adyanf.clone.instagram.utils.network.NetworkHelperImpl
-import com.adyanf.clone.instagram.utils.rx.RxSchedulerProvider
-import com.adyanf.clone.instagram.utils.rx.SchedulerProvider
 import dagger.Module
 import dagger.Provides
-import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Singleton
 
 @Module
@@ -35,16 +32,6 @@ class ApplicationModule(private val application: InstagramApplication) {
     @Singleton
     @TempDirectory
     fun provideTempDirectory() = FileUtils.getDirectory(application, "temp")
-
-    /**
-     * Since this function do not have @Singleton then each time CompositeDisposable is injected
-     * then a new instance of CompositeDisposable will be provided
-     */
-    @Provides
-    fun provideCompositeDisposable(): CompositeDisposable = CompositeDisposable()
-
-    @Provides
-    fun provideSchedulerProvider(): SchedulerProvider = RxSchedulerProvider()
 
     @Provides
     @Singleton

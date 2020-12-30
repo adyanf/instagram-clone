@@ -2,6 +2,7 @@ package com.adyanf.clone.instagram.ui.home.post
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.viewModelScope
 import com.adyanf.clone.instagram.R
 import com.adyanf.clone.instagram.data.model.Image
 import com.adyanf.clone.instagram.data.model.Post
@@ -14,17 +15,14 @@ import com.adyanf.clone.instagram.utils.common.TimeUtils
 import com.adyanf.clone.instagram.utils.display.ScreenUtils
 import com.adyanf.clone.instagram.utils.log.Logger
 import com.adyanf.clone.instagram.utils.network.NetworkHelper
-import com.adyanf.clone.instagram.utils.rx.SchedulerProvider
-import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class PostItemViewModel @Inject constructor(
-    schedulerProvider: SchedulerProvider,
-    compositeDisposable: CompositeDisposable,
     networkHelper: NetworkHelper,
     userRepository: UserRepository,
     private val postRepository: PostRepository
-) : BaseItemViewModel<Post>(schedulerProvider, compositeDisposable, networkHelper) {
+) : BaseItemViewModel<Post>(networkHelper) {
 
     private val user = userRepository.getCurrentUser()!!
     private val screenWidth = ScreenUtils.getScreenWidth()
@@ -65,17 +63,15 @@ class PostItemViewModel @Inject constructor(
 
     fun onLikeClick() = data.value?.let {
         if (networkHelper.isNetworkConnected()) {
-            val api = if (isLiked.value == true) postRepository.makeUnlikePost(it, user)
-                else postRepository.makeLikePost(it, user)
-
-            compositeDisposable.add(
-                api
-                    .subscribeOn(schedulerProvider.io())
-                    .subscribe(
-                        { responsePost -> if (responsePost.id == it.id) updateData(responsePost) },
-                        { error -> handleNetworkError(error) }
-                    )
-            )
+            viewModelScope.launch {
+                try {
+                    val responsePost = if (isLiked.value == true) postRepository.makeUnlikePost(it, user)
+                        else postRepository.makeLikePost(it, user)
+                    if (responsePost.id == it.id) updateData(responsePost)
+                } catch (e: Exception) {
+                    handleNetworkError(e.cause)
+                }
+            }
         } else {
             messageStringId.postValue(Resource.error(R.string.network_connection_error))
         }

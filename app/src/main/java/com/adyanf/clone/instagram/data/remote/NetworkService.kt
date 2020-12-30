@@ -12,7 +12,6 @@ import com.adyanf.clone.instagram.data.remote.response.MyInfoResponse
 import com.adyanf.clone.instagram.data.remote.response.PostCreationResponse
 import com.adyanf.clone.instagram.data.remote.response.PostListResponse
 import com.adyanf.clone.instagram.data.remote.response.SignUpResponse
-import io.reactivex.Single
 import okhttp3.MultipartBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -29,87 +28,87 @@ import javax.inject.Singleton
 interface NetworkService {
 
     @POST(Endpoints.LOGIN)
-    fun doLoginCall(
+    suspend fun doLoginCall(
         @Body request: LoginRequest,
         @Header(Networking.HEADER_API_KEY) apiKey: String = Networking.API_KEY // default value set when Networking create is called
-    ): Single<LoginResponse>
+    ): LoginResponse
 
     @POST(Endpoints.SIGNUP)
-    fun doSignUpCall(
+    suspend fun doSignUpCall(
         @Body request: SignUpRequest,
         @Header(Networking.HEADER_API_KEY) apiKey: String = Networking.API_KEY // default value set when Networking create is called
-    ): Single<SignUpResponse>
+    ): SignUpResponse
 
     @GET(Endpoints.HOME_POSTS_LIST)
-    fun doHomePostsListCall(
+    suspend fun doHomePostsListCall(
         @Query("firstPostId") firstPostId: String?,
         @Query("lastPostId") lastPostId: String?,
         @Header(Networking.HEADER_USER_ID) userId: String,
         @Header(Networking.HEADER_ACCESS_TOKEN) accessToken: String,
         @Header(Networking.HEADER_API_KEY) apiKey: String = Networking.API_KEY
-    ): Single<PostListResponse>
+    ): PostListResponse
 
     @PUT(Endpoints.POST_LIKE)
-    fun doPostLikeCall(
+    suspend fun doPostLikeCall(
         @Body request: PostLikeModifyRequest,
         @Header(Networking.HEADER_USER_ID) userId: String,
         @Header(Networking.HEADER_ACCESS_TOKEN) accessToken: String,
         @Header(Networking.HEADER_API_KEY) apiKey: String = Networking.API_KEY
-    ): Single<GeneralResponse>
+    ): GeneralResponse
 
     @PUT(Endpoints.POST_UNLIKE)
-    fun doPostUnlikeCall(
+    suspend fun doPostUnlikeCall(
         @Body request: PostLikeModifyRequest,
         @Header(Networking.HEADER_USER_ID) userId: String,
         @Header(Networking.HEADER_ACCESS_TOKEN) accessToken: String,
         @Header(Networking.HEADER_API_KEY) apiKey: String = Networking.API_KEY
-    ): Single<GeneralResponse>
+    ): GeneralResponse
 
     @GET(Endpoints.MY_INFO)
-    fun doFetchMyInfoCall(
+    suspend fun doFetchMyInfoCall(
         @Header(Networking.HEADER_USER_ID) userId: String,
         @Header(Networking.HEADER_ACCESS_TOKEN) accessToken: String,
         @Header(Networking.HEADER_API_KEY) apiKey: String = Networking.API_KEY
-    ): Single<MyInfoResponse>
+    ): MyInfoResponse
 
     @PUT(Endpoints.MY_INFO)
-    fun doUpdateMyInfoCall(
+    suspend fun doUpdateMyInfoCall(
         @Body request: UpdateMyInfoRequest,
         @Header(Networking.HEADER_USER_ID) userId: String,
         @Header(Networking.HEADER_ACCESS_TOKEN) accessToken: String,
         @Header(Networking.HEADER_API_KEY) apiKey: String = Networking.API_KEY
-    ): Single<GeneralResponse>
+    ): GeneralResponse
 
     @GET(Endpoints.MY_POST_LIST)
-    fun doMyPostListCall(
+    suspend fun doMyPostListCall(
         @Header(Networking.HEADER_USER_ID) userId: String,
         @Header(Networking.HEADER_ACCESS_TOKEN) accessToken: String,
         @Header(Networking.HEADER_API_KEY) apiKey: String = Networking.API_KEY
-    ): Single<PostListResponse>
+    ): PostListResponse
 
     @DELETE(Endpoints.LOGOUT)
-    fun doLogoutCall(
+    suspend fun doLogoutCall(
         @Header(Networking.HEADER_USER_ID) userId: String,
         @Header(Networking.HEADER_ACCESS_TOKEN) accessToken: String,
         @Header(Networking.HEADER_API_KEY) apiKey: String = Networking.API_KEY
-    ): Single<GeneralResponse>
+    ): GeneralResponse
 
     @Multipart
     @POST(Endpoints.UPLOAD_IMAGE)
-    fun doImageUploadCall(
+    suspend fun doImageUploadCall(
         @Part image: MultipartBody.Part,
         @Header(Networking.HEADER_USER_ID) userId: String,
         @Header(Networking.HEADER_ACCESS_TOKEN) accessToken: String,
         @Header(Networking.HEADER_API_KEY) apiKey: String = Networking.API_KEY
-    ): Single<ImageResponse>
+    ): ImageResponse
 
     @POST(Endpoints.CREATE_POST)
-    fun doCreatePostCall(
+    suspend fun doCreatePostCall(
         @Body request: PostCreationRequest,
         @Header(Networking.HEADER_USER_ID) userId: String,
         @Header(Networking.HEADER_ACCESS_TOKEN) accessToken: String,
         @Header(Networking.HEADER_API_KEY) apiKey: String = Networking.API_KEY
-    ): Single<PostCreationResponse>
+    ): PostCreationResponse
 
     /*
      * Example to add other headers
@@ -120,6 +119,6 @@ interface NetworkService {
             @Header(Networking.HEADER_USER_ID) userId: String, // pass using UserRepository
             @Header(Networking.HEADER_ACCESS_TOKEN) accessToken: String, // pass using UserRepository
             @Header(Networking.HEADER_API_KEY) apiKey: String = Networking.API_KEY // default value set when Networking create is called
-        ): Single<DummyResponse>
+        ): DummyResponse
      */
 }

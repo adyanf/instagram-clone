@@ -1,6 +1,7 @@
 package com.adyanf.clone.instagram.ui.home
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.adyanf.clone.instagram.data.model.Post
 import com.adyanf.clone.instagram.data.model.User
 import com.adyanf.clone.instagram.data.repository.PostRepository
@@ -8,19 +9,17 @@ import com.adyanf.clone.instagram.data.repository.UserRepository
 import com.adyanf.clone.instagram.ui.base.BaseViewModel
 import com.adyanf.clone.instagram.utils.common.Resource
 import com.adyanf.clone.instagram.utils.network.NetworkHelper
-import com.adyanf.clone.instagram.utils.rx.SchedulerProvider
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.processors.PublishProcessor
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.lang.Exception
 
 class HomeViewModel(
-    schedulerProvider: SchedulerProvider,
-    compositeDisposable: CompositeDisposable,
     networkHelper: NetworkHelper,
     userRepository: UserRepository,
     private val postRepository: PostRepository,
-    private val allPostList: ArrayList<Post>,
-    private val paginator: PublishProcessor<Pair<String?, String?>>
-) : BaseViewModel(schedulerProvider, compositeDisposable, networkHelper) {
+    private val allPostList: ArrayList<Post>
+) : BaseViewModel(networkHelper) {
 
     val loading: MutableLiveData<Boolean> = MutableLiveData()
     val posts: MutableLiveData<Resource<List<Post>>> = MutableLiveData()
@@ -31,53 +30,42 @@ class HomeViewModel(
 
     private val user: User = userRepository.getCurrentUser()!!
 
-    init {
-        compositeDisposable.add(
-            paginator
-                .onBackpressureDrop()
-                .doOnNext {
-                    loading.postValue(true)
-                }
-                .concatMapSingle { pageIds ->
-                    return@concatMapSingle postRepository
-                        .fetchHomePostList(user, pageIds.first, pageIds.second)
-                        .subscribeOn(schedulerProvider.io())
-                        .doOnError {
-                            handleNetworkError(it)
-                        }
-                }
-                .subscribe(
-                    {
-                        allPostList.addAll(it)
-
-                        firstPostId = allPostList.maxByOrNull { post -> post.createdAt.time }?.id
-                        lastPostId = allPostList.minByOrNull { post -> post.createdAt.time }?.id
-
-                        loading.postValue(false)
-                        posts.postValue(Resource.success(it))
-                    },
-                    {
-                        loading.postValue(false)
-                        handleNetworkError(it)
-                    }
-                )
-        )
-    }
-
     override fun onCreate() {
-        loadMorePosts()
+        fetchPosts()
     }
 
-    private fun loadMorePosts() {
-        if (checkInternetConnectionWithMessage()) paginator.onNext(Pair(firstPostId, lastPostId))
+    private fun fetchPosts() {
+        if (checkInternetConnectionWithMessage()) {
+            viewModelScope.launch {
+                loading.postValue(true)
+
+                try {
+                    val newPostList = withContext(Dispatchers.IO) {
+                        postRepository.fetchHomePostList(user, firstPostId, lastPostId)
+                    }
+                    allPostList.addAll(newPostList)
+
+                    firstPostId = allPostList.maxByOrNull { post -> post.createdAt.time }?.id
+                    lastPostId = allPostList.minByOrNull { post -> post.createdAt.time }?.id
+
+                    loading.postValue(false)
+                    posts.postValue(Resource.success(newPostList))
+                } catch (e: Exception) {
+                    loading.postValue(false)
+                    handleNetworkError(e.cause)
+                }
+            }
+        }
     }
 
     fun onLoadMore() {
-        if (loading.value !== null && loading.value == false) loadMorePosts()
+        if (loading.value !== null && loading.value == false) fetchPosts()
     }
 
     fun onNewPost(post: Post) {
         allPostList.add(0, post)
-        refreshPosts.postValue(Resource.success(mutableListOf<Post>().apply { addAll(allPostList) }))
+        refreshPosts.postValue(
+            Resource.success(mutableListOf<Post>().apply { addAll(allPostList) })
+        )
     }
 }

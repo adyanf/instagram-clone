@@ -7,11 +7,9 @@ import com.adyanf.clone.instagram.data.model.User
 import com.adyanf.clone.instagram.data.repository.UserRepository
 import com.adyanf.clone.instagram.utils.common.Event
 import com.adyanf.clone.instagram.utils.common.Resource
+import com.adyanf.clone.instagram.utils.coroutine.TestCoroutineRule
 import com.adyanf.clone.instagram.utils.network.NetworkHelper
-import com.adyanf.clone.instagram.utils.rx.TestSchedulerProvider
-import io.reactivex.Single
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.TestScheduler
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -23,11 +21,15 @@ import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 
+@ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
 class LoginViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val testCoroutineRule = TestCoroutineRule()
 
     @Mock
     private lateinit var networkHelper: NetworkHelper
@@ -44,21 +46,11 @@ class LoginViewModelTest {
     @Mock
     private lateinit var messageStringIdObserver: Observer<Resource<Int>>
 
-    private lateinit var testScheduler: TestScheduler
-
     private lateinit var loginViewModel: LoginViewModel
 
     @Before
     fun setup() {
-        val compositeDisposable = CompositeDisposable()
-        testScheduler = TestScheduler()
-        val testSchedulerProvider = TestSchedulerProvider(testScheduler)
-        loginViewModel = LoginViewModel(
-            testSchedulerProvider,
-            compositeDisposable,
-            networkHelper,
-            userRepository
-        )
+        loginViewModel = LoginViewModel(networkHelper, userRepository)
         loginViewModel.loggingIn.observeForever(loggingInObserver)
         loginViewModel.launchMain.observeForever(launchMainObserver)
         loginViewModel.messageStringId.observeForever(messageStringIdObserver)
@@ -72,7 +64,7 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun givenServerResponse200_whenLogin_shouldLaunchDummyActivity() {
+    fun givenServerResponse200_whenLogin_shouldLaunchDummyActivity() = testCoroutineRule.runBlockingTest {
         // given
         val email = "test@gmail.com"
         val password = "password"
@@ -82,12 +74,11 @@ class LoginViewModelTest {
         doReturn(true)
             .`when`(networkHelper)
             .isNetworkConnected()
-        doReturn(Single.just(user))
+        doReturn(user)
             .`when`(userRepository)
             .doUserLogin(email, password)
 
         loginViewModel.onLoginButtonClicked()
-        testScheduler.triggerActions()
 
         verify(userRepository).saveCurrentUser(user)
         assert(loginViewModel.loggingIn.value == false)
@@ -98,7 +89,7 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun givenNoInternet_whenLogin_shouldShowNetworkError() {
+    fun givenNoInternet_whenLogin_shouldShowNetworkError() = testCoroutineRule.runBlockingTest {
         val email = "test@gmail.com"
         val password = "password"
         loginViewModel.emailField.value = email
